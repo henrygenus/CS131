@@ -30,12 +30,17 @@ let rec computed_fixed_point eq (f : 'a->'a) (x :'a) =
   | true -> x
   | false-> (computed_fixed_point (eq) (f) res)
 
+type ('nonterminal, 'terminal) symbol =
+  | N of 'nonterminal
+  | T of 'terminal
 
-let rec filter_reachable (g : 'a * (('a * 'a) list)) =
+let rec filter_reachable (g : 'N * ('N * ('N, 'T) symbol list) list)  =
   let (rt, tree) = g in
   let trimmed_tree = (List.remove_assoc rt tree) in
-  if (List.assoc_opt rt tree) = None then (rt, []) else
+  if (List.assoc_opt rt tree) = None then  ( "", []) else
     let child = (List.assoc rt tree) in
     let _, sub_tree = (filter_reachable (child, trimmed_tree)) in
     let _, rem_tree = (filter_reachable (rt, trimmed_tree)) in
     ((rt, set_intersection tree (set_union sub_tree ((rt, child)::rem_tree))))
+
+(* fold union iter filter_reachable *)
