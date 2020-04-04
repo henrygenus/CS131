@@ -46,9 +46,9 @@ let filter_and_merge_trees f (g : 'N * ('N * ('N, 'T) symbol list) list) tree = 
 let rec filter_reachable (g : 'N * ('N * ('N, 'T) symbol list) list)  =
   let ((rt : 'N) , (tree : ('N * ('N, 'T) symbol list) list)) = g in
   if (List.assoc_opt rt tree) = None then  (rt, []) else
+    let (clipped_tree : ('N * ('N, 'T) symbol list) list) = (List.remove_assoc rt tree) in
     let (children : ('N, 'T) symbol list) = List.assoc rt tree in
-    let get_nonterminal = (function N node -> Some node | _ -> None) in
-    let nonterminal = (List.filter_map get_nonterminal (children)) in
+    let nonterminal = (List.filter_map (function N node -> Some node | _ -> None) (children)) in
     let glue_subtrees = List.fold_right (filter_and_merge_trees filter_reachable) in
-    let subtree = glue_subtrees (make_pair_list nonterminal (List.remove_assoc rt tree)) [] in
-    (rt, set_intersection tree (List.cons (rt, children) subtree))
+    let subtree = glue_subtrees (make_pair_list nonterminal clipped_tree) [(rt,children)] in
+    (rt, set_intersection tree (glue_subtrees [(rt, clipped_tree)] subtree))
