@@ -34,21 +34,21 @@ type ('nonterminal, 'terminal) symbol =
   | N of 'nonterminal
   | T of 'terminal
 
-let rec make_pair_list (keys : 'N list) value =
+let rec make_grammar (keys : 'N list) value =
   match (keys) with
   | [] -> []
-  | _ -> List.cons (List.hd keys, value) (make_pair_list (List.tl keys) value)
+  | _ -> List.cons (List.hd keys, value) (make_grammar (List.tl keys) value)
 
-let merge_trees ((rt_one : 'N), tree_one) tree = set_union tree_one tree
-
-let filter_and_merge_trees f (g : 'N * ('N * ('N, 'T) symbol list) list) tree = merge_trees (f g) tree
+let map_and_merge_trees f (g : 'N * ('N * ('N, 'T) symbol list) list) tree =
+  let rt, subtree = (f g) in set_union subtree tree
 
 let rec filter_reachable (g : 'N * ('N * ('N, 'T) symbol list) list)  =
   let ((rt : 'N) , (tree : ('N * ('N, 'T) symbol list) list)) = g in
   if (List.assoc_opt rt tree) = None then  (rt, []) else
-    let (clipped_tree : ('N * ('N, 'T) symbol list) list) = (List.remove_assoc rt tree) in
-    let (children : ('N, 'T) symbol list) = List.assoc rt tree in
-    let nonterminal = (List.filter_map (function N node -> Some node | _ -> None) (children)) in
-    let glue_subtrees = List.fold_right (filter_and_merge_trees filter_reachable) in
-    let subtree = glue_subtrees (make_pair_list nonterminal clipped_tree) [(rt,children)] in
-    (rt, set_intersection tree (glue_subtrees [(rt, clipped_tree)] subtree))
+    let clipped_tree = (List.remove_assoc rt tree) in
+    let children : ('N, 'T) symbol list = List.assoc rt tree in
+    let nonterminal_children = (List.filter_map (function N node -> Some node | _ -> None) (children)) in
+    let glue_subtrees_of = List.fold_right (map_and_merge_trees filter_reachable) in
+    let subgrammars = make_grammar nonterminal_children clipped_tree in
+    let subtree = glue_subtrees_of (subgrammars) [(rt, children)] in
+    (rt, set_intersection tree (glue_subtrees_of [(rt, clipped_tree)] subtree))
