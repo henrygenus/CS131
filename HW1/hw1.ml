@@ -42,6 +42,7 @@ let rec make_grammar (nodes: 'N list) tree =
 let map_and_merge_trees f (g : 'N * ('N * ('N, 'T) symbol list) list) tree =
   let rt, subtree = (f g) in set_union subtree tree
 
+(* try filtering in with function with recursion only *)
 let rec filter_reachable ((rt : 'N ), (tree : ('N * ('N, 'T) symbol list) list))  =
   if (List.assoc_opt rt tree) = None then  (rt, []) else
     let clipped_tree = (List.remove_assoc rt tree) in
