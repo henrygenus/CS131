@@ -137,4 +137,4 @@ let giant_test1 =
 let giant_test2 =
   filter_reachable (Quiet, snd giant_grammar) = (Quiet, [Quiet, []])
 
-let no_print = false
+let no_print = true
