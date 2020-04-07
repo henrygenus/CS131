@@ -39,15 +39,20 @@ let rec make_grammar (nodes: 'N list) tree =
   match (nodes) with
   | [] -> []
   | _ -> List.cons (List.hd nodes, tree) (make_grammar (List.tl nodes) tree)
-
-let rec filter_and_stick_subtree (operand : 'N * ('N * ('N, 'T) symbol list) list) tree =
+(* glue subtrees of operand to tree *)
+and filter_and_stick_subtree (operand : 'N * ('N * ('N, 'T) symbol list) list) tree =
   match (filter_reachable operand) with | _, subtree -> set_union subtree tree
 and filter_reachable ((rt : 'N ), (tree : ('N * ('N, 'T) symbol list) list))  =
   if (List.assoc_opt rt tree) = None then  (rt, []) else
+    (* seperate found child subtree from rest of tree *)
     let clipped_tree = (List.remove_assoc rt tree) in
+    (* get symbols of the child expression & nonterminal symbols *)
     let child_expr : ('N, 'T) symbol list = List.assoc rt tree in
-    let nonterminal_children = (List.filter_map (function N node -> Some node | _ -> None) (child_expr)) in
+    let expr_N_symbols = (List.filter_map (function N node -> Some node | _ -> None) (child_expr)) in
+    (* glue trees of all subtrees of child together *)
     let filter_and_glue = List.fold_right filter_and_stick_subtree in
-    let subgrammars = make_grammar nonterminal_children clipped_tree in
+    let subgrammars = make_grammar expr_N_symbols clipped_tree in
     let filtered_subtrees = filter_and_glue (subgrammars) [(rt, child_expr)] in
+    (* recursive call on same node to check for other children, merge with child subtrees *)
+    (* set_intersection used to reset order *)
     (rt, set_intersection tree (filter_and_glue [(rt, clipped_tree)] filtered_subtrees))
