@@ -1,5 +1,5 @@
 let my_F_test0 = subset [3; 8] [1; 2; 3; 5; 8; 13; 21]
-let my_F_test1 = equal_sets [3; 7; 1; 5] [1; 2; 3; 7]
+let my_F_test1 = equal_sets [3; 7; 1; 5] [1; 3; 5; 7]
 let my_F_test2 = equal_sets (set_union [2; 4; 6; 8] [1; 3; 5; 7; 9]) [1; 2; 3; 4; 5; 6; 7; 8; 9]
 let my_F_test3 = equal_sets (set_intersection [3; 5; 6; 7; 9] [2; 9; 8; 6; 2]) [6; 9]
 let my_F_test4 = equal_sets (set_diff [3; 5; 2; 6; 8; 9] [2; 3; 0; 5; 8]) [6; 9]
