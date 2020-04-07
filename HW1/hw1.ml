@@ -24,7 +24,7 @@ let rec set_diff a b =
     | true -> set_diff (List.tl a) b
     | false -> (List.hd a)::(set_diff (List.tl a) b)
 
-let rec computed_fixed_point eq (f : 'a->'a) (x :'a) =
+let rec computed_fixed_point eq f x =
   let res = (f x) in
   match (eq res x) with
   | true -> x
@@ -34,20 +34,22 @@ type ('nonterminal, 'terminal) symbol =
   | N of 'nonterminal
   | T of 'terminal
 
-(* given a list of symbols and a shared tree, produce (symbol, tree) grammars for each symbol *)
-let rec make_grammar (nodes: 'N list) tree =
-  match (nodes) with
-  | [] -> []
-  | _ -> List.cons (List.hd nodes, tree) (make_grammar (List.tl nodes) tree)
+let rec symbol (a, b) = a
+and expression (a, b) = b
+and equal_sec_set a b = (equal_sets (List.nth a 1) (List.nth b 1))
+and get_reachable reachable_symbols rules =
+  if (rules = [[], []]) then reachable_symbols else
+    let rule = (List.hd rules) in
+    match (List.mem reachable_symbols (symbol rule)) with
+    | false -> get_reachable reachable_symbols (List.tl rules)
+    | true -> let nonterminal = List.filter (function N _ -> true | _ -> false) (expression rule) in
+              get_reachable (set_union reachable_symbols nonterminal) (List.tl rules)
+and filter_reachable g =
+  let root, rules = g in
+  (* get reachable symbols *)
+  let reachable_symbols = computed_fixed_point equal_sec_set get_reachable root rules in
+  (* filter the rules *)
+  let filter_rules = (function s_r -> (List.mem (List.hd s_r) (List.nth s_r 2))) in
+  let filtered_rules = List.filter filter_rules (reachable_symbols, rules) in
+  (root, filtered_rules)
 
-let rec filter_and_stick_subtree (operand : 'N * ('N * ('N, 'T) symbol list) list) tree =
-  match (filter_reachable operand) with | _, subtree -> set_union subtree tree
-and filter_reachable ((rt : 'N ), (tree : ('N * ('N, 'T) symbol list) list))  =
-  if (List.assoc_opt rt tree) = None then  (rt, []) else
-    let clipped_tree = (List.remove_assoc rt tree) in
-    let child_expr : ('N, 'T) symbol list = List.assoc rt tree in
-    let nonterminal_children = (List.filter_map (function N node -> Some node | _ -> None) (child_expr)) in
-    let filter_and_glue = List.fold_right filter_and_stick_subtree in
-    let subgrammars = make_grammar nonterminal_children clipped_tree in
-    let filtered_subtrees = filter_and_glue (subgrammars) [(rt, child_expr)] in
-    (rt, set_intersection tree (filter_and_glue [(rt, clipped_tree)] filtered_subtrees))
