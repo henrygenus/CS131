@@ -1,75 +1,53 @@
-Following is explanations of the method and algorithm of each function:
-
+All SET functions take lists, a & b, representing sets
 SUBSET:
-	INPUT: two lists, a & b, representing sets
-	OUTPUT: bool representing if a is a subset of b
-	ALGORITHM: induction
-		base case: the former is empty, so return true
-		inductive case: if a[0] is in b, return (subset (rest of a) b)
+	OUT: bool representing if a is a subset of b
+	base case: the former is empty, so return true
+	inductive case: if a[0] is in b, return (subset (rest of a) b)
 				if not, return false
 
 EQUAL SETS:
-	INPUT: two lists, a & b, representing sets
 	OUTPUT: bool representing if the sets are equivalent
-	ALGORITHM: return whether both are sunsets of each other
+	return whether both are subsets of each other
 
 
 SET UNION:
-	INPUT: two lists, a & b, representing sets
-	OUTPUT: a list representing the union of the two sets
-	ALGORITHM: induction
-		base case: a is empty, so return b
-		inductive case: if a[0] a is in b, return (union (rest of a) b)
-				if not, return the first element of a::the recursive call
+	OUT: a list representing the union of the two sets
+	if a is empty, return b
+	else if a[0] a is in b, return (union (rest of a) b)
+	else return the first element of a::the recursive call
 
 SET INTERSECTION:
-	INPUT: two lists, a & b, representing sets
-	OUTPUT: a list representing the intersection of the two sets
-	ALGORITHM: induction
-		base case: a is empty, so return []
-		inductive case: if a[0] is in b, return a[0]::(intersection (rest of a) b)
-				if not, return (intersection (rest of a) b)
+	OUT: a list representing the intersection of the two sets
+	if a is empty, so return []
+	else if a[0] is in b, return a[0]::(intersection (rest of a) b)
+	else return (intersection (rest of a) b)
 
 SET DIFF:
-	INPUT: two lists, a & b, representing sets
-	OUTPUT: a list representing the difference between the two sets (a - b)
-	ALGORITHM: induction
-		base case: a is empty, so return []
-		inductive case: if a[0] is in b, return (difference (rest of a) b)
-				if not, return a[0]::(difference (rest of a) b)
+	OUT: a list representing the difference between the two sets (a - b)
+	if a is empty, so return []
+	else if a[0] is in b, return (difference (rest of a) b)
+	else return a[0]::(difference (rest of a) b)
 
 COMPUTED FIXED POINT:
-	INPUT: equality function eq, function f, first input value x
-	OUTPUT: a value v of the same type as the input value st (f v) = v
+	IN: equality function eq, function f, first input value x
+	OUT: a value v of the same type as the input value st (f v) = v
 		this may loop infinitely if there is no solution
-	ALGORITHM: induction
-		base case: if f(input value) = input value, return input value
-		inductive case: return COMPUTED FIXED POINT eq f output value
+	if f(input value) = input value, return input value
+	else return COMPUTED FIXED POINT eq f output value
 
 
 FILTER REACHABLE:
-	INPUT: a pair (rt, rules) representing a grammar
-	OUTPUT: a pair (rt, new rules) where new rules is the reachable subset of rules
-	ALGORITHM: induction
-		base case: rules contains no more branches for rt; return rules
-		inductive case: get a rule branching from the rt 
-				get the nonterminal subset of the expression in this rule
-				clip the tree at this branch (remove this rule from rules)
-				recursive call on each symbol in the rule
-				glue the resulting rule trees together
-				combine the resulting subtree with another call on the rt
-					(to check for more children)
-				return (rt, set_intersection tree combined_tree)
+	IN: a pair (rt, rules) representing a grammar
+	OUT: a pair (rt, new rules) where new rules is the reachable subset of rules
+	if rules contains no more branches for rt; return rules
+	else:	get a rule branching from rt 
+		get the nonterminal subset of rule's expression
+		clip the rule tree at this branch
+		recursive call on each symbol in the expr
+		combine resulting rule trees
+		merge combined subtree with recursive call on rt
+		return (rt, set_intersection tree combined_tree)
 
-	The following defined variables and subroutines are used:
-		make_grammar nodes tree:	for node in nodes make (node, tree)
-							return list to prep for iteration
+	The following defined subroutines are used:
+		make_grammar nodes tree:	return list (for node in nodes make (node, tree))
 		filter_and_stick_subtrees:	merge results of filtering operand w/ tree
-		child_expr:			the expression from the found rule for rt
-		expr_N_symbols:			the nonterminal subset of child_expr
-		clipped_tree:			the rules with the found rule cut
-		filter_and_glue:		merge results of filtering a list of symbols
-		subgrammars:			list of (symbol, rules) pairs formed from
-							expr_N_symbols and clipped_tree
-		filtered_subtrees:		merged results of filtering subgrammars
-							and merging with the clipped rule
