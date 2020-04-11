@@ -39,15 +39,8 @@ COMPUTED FIXED POINT:
 FILTER REACHABLE:
 	IN: a pair (rt, rules) representing a grammar
 	OUT: a pair (rt, new rules) where new rules is the reachable subset of rules
-	if rules contains no more branches for rt; return rules
-	else:	get a rule branching from rt 
-		get the nonterminal subset of rule's expression
-		clip the rule tree at this branch
-		recursive call on each symbol in the expr
-		combine resulting rule trees
-		merge combined subtree with recursive call on rt
-		return (rt, set_intersection tree combined_tree)
-
-	The following defined subroutines are used:
-		make_grammar nodes tree:	return list (for node in nodes make (node, tree))
-		filter_and_stick_subtrees:	merge results of filtering operand w/ tree
+        get reachable symbols
+            grab a rule involving the currect symbol
+            recursive call on each element of that rule, ignoring terminals
+            return (unused_rules, union of recursive calls)
+        filter list of rules by the reachable symbols
