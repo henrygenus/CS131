@@ -34,30 +34,6 @@ type ('nonterminal, 'terminal) symbol =
   | N of 'nonterminal
   | T of 'terminal
 
-<<<<<<< HEAD
-(* given a list of symbols and a shared tree, produce (symbol, tree) grammars for each symbol *)
-let rec make_grammar (nodes: 'N list) tree =
-  match (nodes) with
-  | [] -> []
-  | _ -> List.cons (List.hd nodes, tree) (make_grammar (List.tl nodes) tree)
-(* glue subtrees of operand to tree *)
-and filter_and_stick_subtree (operand : 'N * ('N * ('N, 'T) symbol list) list) tree =
-  match (filter_reachable operand) with | _, subtree -> set_union subtree tree
-and filter_reachable ((rt : 'N ), (tree : ('N * ('N, 'T) symbol list) list))  =
-  if (List.assoc_opt rt tree) = None then  (rt, []) else
-    (* get symbols of the child expression & nonterminal symbols *)
-    let child_expr : ('N, 'T) symbol list = List.assoc rt tree in
-    let expr_N_symbols = (List.filter_map (function N node -> Some node | _ -> None) (child_expr)) in
-    (* seperate found child subtree from rest of tree *)
-    let clipped_tree = (List.remove_assoc rt tree) in
-    (* glue trees of all subtrees of child together *)
-    let filter_and_glue = List.fold_right filter_and_stick_subtree in
-    let subgrammars = make_grammar expr_N_symbols clipped_tree in
-    let filtered_subtrees = filter_and_glue (subgrammars) [(rt, child_expr)] in
-    (* recursive call on same node to check for other children, merge with child subtrees *)
-    (* set_intersection used to reset order *)
-    (rt, set_intersection tree (filter_and_glue [(rt, clipped_tree)] filtered_subtrees))
-=======
 let rec first (a, b) = a and second (a, b) = b
 and equal_sec_set rule_symbol_one rule_symbol_two =
   let (_, a), (_, b) = (rule_symbol_one, rule_symbol_two) in (equal_sets a b)
@@ -77,5 +53,3 @@ and filter_reachable g =
   let filter_rules = (function rule -> (List.mem (first rule) reachable_symbols)) in
   let filtered_rules = List.filter filter_rules rules in
   (root, filtered_rules)
-
->>>>>>> cleanup
