@@ -41,9 +41,10 @@ and get_reachable (rules, reachable_symbols) =
   if (rules = []) then (rules, reachable_symbols) else
     let rule = (List.hd rules) in
     match (List.mem (first rule) reachable_symbols) with
-    | false -> get_reachable ((List.tl rules), reachable_symbols)
     | true -> let nonterminal = List.filter_map (function N n -> Some n | T _ -> None) (second rule) in
               get_reachable ((List.tl rules), (set_union reachable_symbols nonterminal))
+    | false -> let unreached_rules, reached_symbols = get_reachable ((List.tl rules), reachable_symbols) in
+               (rule::unreached_rules, reached_symbols)
 and filter_reachable g =
   let root, rules = g in
   (* get reachable symbols *)
