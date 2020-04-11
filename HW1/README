@@ -1,3 +1,5 @@
+This file was called "hw1.txt" when submitted.
+
 All SET functions take lists, a & b, representing sets
 SUBSET:
 	OUT: bool representing if a is a subset of b
