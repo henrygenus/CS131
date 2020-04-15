@@ -34,29 +34,30 @@ let rec parse_tree_leaves tree =
     | Leaf l -> [l]
     | Node (nonterminal, subtree) -> (List.concat (List.map parse_tree_leaves subtree))
 
+let rec match_pred(prod_fcn : 'N -> ('N, 'T) symbol list list) pred frag =
+  if (pred = []) then Some frag else if (frag = []) then None else
+    let sym = (List.hd pred) in
+    match sym with
+    | N n -> dfs prod_fcn (prod_fcn n) (match_pred prod_fcn (List.tl pred)) frag
+    | T (t : string) -> if (t = (List.hd frag))
+                        then match_pred prod_fcn (List.tl pred) (List.tl frag)
+                        else None
+and dfs prod_fcn associative_list accept frag =
+  if (associative_list = []) then None else
+    let pred_result = (match_pred prod_fcn (List.hd associative_list) frag) in
+    match pred_result with
+    | None -> dfs prod_fcn (List.tl associative_list) accept frag
+    | Some suffix -> let output = (accept suffix) in
+                     if (output = None)
+                     then dfs prod_fcn (List.tl associative_list) accept frag
+                     else output
 
-
-(* pruning -- need to increase efficiency *)
 let rec make_matcher gram =
-  let (root: 'N), (get_preds : 'N -> ('N, 'T) symbol list list)  = gram in
-  let preds = (get_preds root) in
-  (fun accept frag -> (apply_preds (get_preds) preds accept frag))
-and do_apply get_preds pred frag =
-    if (pred = []) then Some frag else
-    if (frag = []) then None else
-      let (sym : ('N, 'T) symbol) = (List.hd pred) in
-      match sym with
-      | N sym -> ((make_matcher (sym, get_preds)) (do_apply get_preds (List.tl pred)) frag)
-      | T sym -> if ((List.hd frag) = sym)
-                 then do_apply get_preds (List.tl pred) (List.tl frag)
-                 else None
-and apply_preds get_preds preds accept frag =
-  if (preds = []) then None else
-    match (do_apply get_preds (List.hd preds) frag) with
-    | None -> (apply_preds get_preds (List.tl preds) accept frag)
-    | Some suffix -> let return_value = (accept suffix) in
-                     if (return_value = None) then (apply_preds get_preds (List.tl preds) accept frag)
-                          else return_value
+  let (root : 'n), (prod_fcn : 'N -> ('N, 'T) symbol list list) = gram in
+  let (associative_list : ('N, 'T) symbol list list) = (prod_fcn root) in
+  let matcher =  (dfs prod_fcn associative_list) in
+  (matcher : ('T list -> 'T list option)  -> 'T list -> 'T list option)
+
 
 (* parser calls matcher until end of fragment *)
 (*let make_parser *)
