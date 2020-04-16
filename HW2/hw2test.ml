@@ -15,26 +15,26 @@ let awkish_grammar =
   (Expr,
    function
      | Expr ->
-         [[N Term; N Binop; N Expr];
+         [(*[N Term; N Binop; N Expr];*)
           [N Term]]
      | Term ->
 	 [[N Num];
 	  [N Lvalue];
-	  [N Incrop; N Lvalue];
+(*	  [N Incrop; N Lvalue];*)
 	  [N Lvalue; N Incrop];
 	  [T"("; N Expr; T")"]]
      | Lvalue ->
 	 [[T"$"; N Expr]]
      | Incrop ->
 	 [[T"++"];
-	  [T"--"]]
-     | Binop ->
+(*	  [T"--"]*)]
+ (*    | Binop ->
 	 [[T"+"];
-	  [T"-"]]
+	  [T"-"]]*)
      | Num ->
-	 [[T"0"]; [T"1"]; [T"2"]; [T"3"]; [T"4"];
-	  [T"5"]; [T"6"]; [T"7"]; [T"8"]; [T"9"]])
-
+	 [(*[T"0"]; [T"1"]; [T"2"]; [T"3"]; [T"4"];*)
+	  [T"5"]; (*[T"6"]; [T"7"]; [T"8"]; [T"9"]*)])
+(*
 let test0 =
   ((make_matcher awkish_grammar accept_all ["ouch"]) = None)
 
@@ -57,13 +57,13 @@ let test4 =
       "("; "$"; "++"; "$"; "2"; "+"; "("; "8"; ")"; "-"; "9"; ")";
       "-"; "("; "$"; "$"; "$"; "$"; "$"; "++"; "$"; "$"; "5"; "++";
       "++"; "--"; ")"; "-"; "++"; "$"; "$"; "("; "$"; "8"; "++"; ")";
-      "++"; "+"; "0"])
-  = Some [])
+      "++"; "+"; "0"]))
 
 let test5 =
   (parse_tree_leaves (Node ("+", [Leaf 3; Node ("*", [Leaf 4; Leaf 5])]))
    = [3; 4; 5])
-
+*)
+(*
 let small_awk_frag = ["$"; "1"; "++"; "-"; "2"]
 
 let test6 =
@@ -87,4 +87,6 @@ let test7 =
   match make_parser awkish_grammar small_awk_frag with
     | Some tree -> parse_tree_leaves tree = small_awk_frag
     | _ -> false
+*)
 
+let customtest = ((make_matcher awkish_grammar accept_all ["("; "$"; "5";"++"; ")"]))
