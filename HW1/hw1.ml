@@ -50,6 +50,6 @@ and filter_reachable g =
   (* get reachable symbols *)
   let _, reachable_symbols = computed_fixed_point equal_sec_set get_reachable (rules, [root]) in
   (* filter the rules *)
-  let filter_rules = (function rule -> (List.mem (first rule) reachable_symbols)) in
+  let filter_rules = (fun rule -> (List.mem (first rule) reachable_symbols)) in
   let filtered_rules = List.filter filter_rules rules in
   (root, filtered_rules)
