@@ -33,26 +33,8 @@ let rec parse_tree_leaves tree =
     | Leaf l -> [l]
     | Node (_, subtree) -> (List.concat (List.map parse_tree_leaves subtree))
 
-let rec match_pred (prod_fcn : 'N -> ('N, 'T) symbol list list) pred frag =
-  if (pred = []) then Some frag else if (frag = []) then None else
-    match pred with
-    | (N h)::t -> dfs prod_fcn (prod_fcn h) (match_pred prod_fcn t) frag
-    | (T (h : string))::t  -> if (h <> (List.hd frag)) then None
-                              else match_pred prod_fcn t (List.tl frag)
-and dfs prod_fcn assoc_list accept frag =
-  if (assoc_list = []) then None else
-    match (match_pred prod_fcn (List.hd assoc_list) frag) with
-    | None -> dfs prod_fcn (List.tl assoc_list) accept frag
-    | Some suffix -> match (accept suffix) with
-                     | Some output -> Some output
-                     | None ->  dfs prod_fcn (List.tl assoc_list) accept frag
 
-let rec make_matcher gram =
-  let (root : 'n), (prod_fcn : 'N -> ('N, 'T) symbol list list) = gram in
-  let (associative_list : ('N, 'T) symbol list list) = (prod_fcn root) in
-  let matcher =  (dfs prod_fcn associative_list) in
-  (matcher : ('T list -> 'T list option)  -> 'T list -> 'T list option)
-
+let rec make_matcher gram = 0
 
 (* parser calls matcher until end of fragment *)
 (* let make_parser *)
