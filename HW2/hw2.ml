@@ -10,6 +10,11 @@ let first two_tuple = let ret, _ = two_tuple in ret
 let second two_tuple = let _, ret = two_tuple in ret
 let is_key key pair = (first pair) = key
 
+
+(* 1 *)
+
+(* convert_rules:
+   fun grammarType1 -> associative_list *)
 let rec convert_rules gram1 =
   let start_symbol, rules = gram1 in
   if ((List.length rules) = 0) then [] else
@@ -23,36 +28,64 @@ let rec convert_rules gram1 =
       (* else recursive call on rest of rules *)
       g2_rules@(convert_rules ((first (List.hd rest)), rest))
 
+(* convert_grammar:
+   grammarType1 -> grammarType2 *)
 let convert_grammar gram1 =
   let grammar_two_rules = convert_rules gram1 in
   let start_symbol = (first gram1) in
     (start_symbol, (fun rule -> List.assoc rule grammar_two_rules))
 
+
+(* 2 *)
+
+(* parse_tree_leaves:
+   fun parse_tree -> terminal symbol list *)
 let rec parse_tree_leaves tree =
   match tree with
     | Leaf l -> [l]
     | Node (_, subtree) -> (List.concat (List.map parse_tree_leaves subtree))
 
-let rec match_pred (prod_fcn : 'N -> ('N, 'T) symbol list list) pred frag =
-  if (pred = []) then Some frag else if (frag = []) then None else
-    match pred with
-    | (N h)::t -> dfs prod_fcn (prod_fcn h) (match_pred prod_fcn t) frag
-    | (T (h : string))::t  -> if (h <> (List.hd frag)) then None
-                              else match_pred prod_fcn t (List.tl frag)
-and dfs prod_fcn assoc_list accept frag =
-  if (assoc_list = []) then None else
-    match (match_pred prod_fcn (List.hd assoc_list) frag) with
-    | None -> dfs prod_fcn (List.tl assoc_list) accept frag
-    | Some suffix -> match (accept suffix) with
-                     | Some output -> Some output
-                     | None ->  dfs prod_fcn (List.tl assoc_list) accept frag
 
-let rec make_matcher gram =
-  let (root : 'n), (prod_fcn : 'N -> ('N, 'T) symbol list list) = gram in
-  let (associative_list : ('N, 'T) symbol list list) = (prod_fcn root) in
-  let matcher =  (dfs prod_fcn associative_list) in
-  (matcher : ('T list -> 'T list option)  -> 'T list -> 'T list option)
+(* 3 *)
 
+let accept_none = fun accept frag -> None
+let accept_all = fun accept frag -> Some frag
+let match_empty = fun accept frag -> accept frag
 
-(* parser calls matcher until end of fragment *)
-(* let make_parser *)
+(* make_terminal_matcher:
+   returns a matcher which matches a frag if the head matches a terminal *)
+let make_terminal_matcher leaf =
+  fun accept -> function | leaf::t -> accept t | _ -> None
+
+let make_node_matcher production_function = function
+  | T node -> make_terminal_matcher (node : string)
+  | N node -> make_matcher (node, production_function)
+
+let append_matchers matcher1 matcher2 =
+  fun accept frag -> matcher1 (fun suf -> matcher2 accept suf) frag
+
+let parallel_matchers matcher1 matcher2 =
+  fun accept frag -> match matcher1 accept frag with
+                     | None -> matcher2 accept frag
+                     | suffix -> suffix
+
+(* make_and_matcher:
+   returns a matcher which is the logical AND of a series of matchers *)
+let rec make_and_matcher f = function
+  | [] -> match_empty
+  | h::t -> append_matchers (make_node_matcher f h) (make_and_matcher f t)
+
+(* make_or_matcher
+ returns a matcher which is the logical OR of a series of matchers *)
+let rec make_or_matcher f = function
+  | [] ->  accept_none
+  | h::t -> parallel_matchers (make_and_matcher f h) (make_or_matcher f t)
+
+(* make_matcher:
+   returns a matcher which tests if any of a series of matchers passes a frag *)
+let make_matcher gram =
+  let root, production_function = gram
+  in let make_a_matcher =  make_or_matcher production_function
+     in match production_function root with
+        | [] -> accept_none
+        | alt_list -> make_a_matcher alt_list
