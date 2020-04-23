@@ -36,19 +36,17 @@ let awkish_grammar =
 	  [T"5"]; (*[T"6"]; [T"7"]; [T"8"]; [T"9"]*)])
 (*
 let test0 =
-  ((make_matcher awkish_grammar accept_all ["ouch"]) = None)
+  (make_matcher awkish_grammar accept_all ["ouch"])
 
 let test1 =
   ((make_matcher awkish_grammar accept_all ["9"])
    = Some [])
 
 let test2 =
-  ((make_matcher awkish_grammar accept_all ["9"; "+"; "$"; "1"; "+"])
-   = Some ["+"])
+  (make_matcher awkish_grammar accept_all ["9"; "+"; "$"; "1"; "+"])
 
 let test3 =
-  ((make_matcher awkish_grammar accept_empty_suffix ["9"; "+"; "$"; "1"; "+"])
-   = None)
+  (make_matcher awkish_grammar accept_empty_suffix ["9"; "+"; "$"; "1"; "+"])
 
 (* This one might take a bit longer.... *)
 let test4 =
@@ -62,7 +60,10 @@ let test4 =
 let test5 =
   (parse_tree_leaves (Node ("+", [Leaf 3; Node ("*", [Leaf 4; Leaf 5])]))
    = [3; 4; 5])
+<<<<<<< Updated upstream
 *)
+=======
+>>>>>>> Stashed changes
 (*
 let small_awk_frag = ["$"; "1"; "++"; "-"; "2"]
 
@@ -88,5 +89,8 @@ let test7 =
     | Some tree -> parse_tree_leaves tree = small_awk_frag
     | _ -> false
 *)
+<<<<<<< Updated upstream
 
 let customtest = ((make_matcher awkish_grammar accept_all ["("; "$"; "5";"++"; ")"]))
+=======
+>>>>>>> Stashed changes
