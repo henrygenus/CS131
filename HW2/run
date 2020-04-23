@@ -1,4 +1,0 @@
-#use "hw2.ml";;
-#trace match_pred;;
-#trace dfs;;
-#use "hw2test.ml";;
