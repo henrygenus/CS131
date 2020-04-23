@@ -48,40 +48,44 @@ let rec parse_tree_leaves tree =
 
 (* 3 *)
 
-let accept_none = function | _ -> None
-
-let append_matcher matcher1 matcher2 =
-  fun accept frag -> matcher1 frag (fun suf -> m2 suf accept)
+let accept_none = fun accept frag -> None
+let accept_all = fun accept frag -> Some frag
+let match_empty = fun accept frag -> accept frag
 
 (* make_terminal_matcher:
    returns a matcher which matches a frag if the head matches a terminal *)
 let make_terminal_matcher leaf =
   fun accept -> function | leaf::t -> accept t | _ -> None
 
+let make_node_matcher production_function = function
+  | T node -> make_terminal_matcher (node : string)
+  | N node -> make_matcher (node, production_function)
+
+let append_matchers matcher1 matcher2 =
+  fun accept frag -> matcher1 (fun suf -> matcher2 accept suf) frag
+
+let parallel_matchers matcher1 matcher2 =
+  fun accept frag -> match matcher1 accept frag with
+                     | None -> matcher2 accept frag
+                     | suffix -> suffix
+
 (* make_and_matcher:
    returns a matcher which is the logical AND of a series of matchers *)
 let rec make_and_matcher f = function
-  | [] -> fun accept frag -> accept frag
-  | h::t -> fun accept frag ->
-            let recurse =  = fun accept -> make_and_matcher f t accept
-            match h with
-            | T h -> append_matchers (make_terminal_matcher (h : string)) (rest_matcher) frag
-            | N h -> make_matcher (h, f) (make_and_matcher f t accept)  frag
+  | [] -> match_empty
+  | h::t -> append_matchers (make_node_matcher f h) (make_and_matcher f t)
 
 (* make_or_matcher
  returns a matcher which is the logical OR of a series of matchers *)
-and make_or_matcher f = function
-  | [] -> fun accept frag ->  None
-  | h::t -> fun accept frag ->
-            match make_and_matcher f h accept frag with
-            | None -> make_or_matcher f t accept frag
-            | Some accepted_suffix -> Some accepted_suffix
+let rec make_or_matcher f = function
+  | [] ->  accept_none
+  | h::t -> parallel_matchers (make_and_matcher f h) (make_or_matcher f t)
 
 (* make_matcher:
    returns a matcher which tests if any of a series of matchers passes a frag *)
-and make_matcher gram =
-  let root, production_function = gram in
-  let make_a_matcher =  make_or_matcher production_function in
-  match production_function root with
-  | [] -> fun accept frag -> None
-  | alt_list -> make_a_matcher alt_list
+let make_matcher gram =
+  let root, production_function = gram
+  in let make_a_matcher =  make_or_matcher production_function
+     in match production_function root with
+        | [] -> accept_none
+        | alt_list -> make_a_matcher alt_list
