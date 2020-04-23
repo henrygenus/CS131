@@ -48,38 +48,40 @@ let rec parse_tree_leaves tree =
 
 (* 3 *)
 
+let accept_none = function | _ -> None
+
+let append_matcher matcher1 matcher2 =
+  fun accept frag -> matcher1 frag (fun suf -> m2 suf accept)
 
 (* make_terminal_matcher:
-   fun terminal -> (head = terminal) && accept tail *)
-let make_terminal_matcher make_a_matcher =
-  fun leaf -> fun accept frag ->  match frag with | [] -> None | leaf::t -> accept t
+   returns a matcher which matches a frag if the head matches a terminal *)
+let make_terminal_matcher leaf =
+  fun accept -> function | leaf::t -> accept t | _ -> None
 
-(* make_AND_matcher:
-   fun predicate -> (match (first predicate) && make_AND_matcher (rest predicate)) && accept suffix *)
-let rec make_and_matcher make_a_matcher  = function
+(* make_and_matcher:
+   returns a matcher which is the logical AND of a series of matchers *)
+let rec make_and_matcher f = function
   | [] -> fun accept frag -> accept frag
-  | h::t -> let and_rest = make_and_matcher make_a_matcher t in
-            fun accept frag -> make_a_matcher h (and_rest accept) frag
+  | h::t -> fun accept frag ->
+            let recurse =  = fun accept -> make_and_matcher f t accept
+            match h with
+            | T h -> append_matchers (make_terminal_matcher (h : string)) (rest_matcher) frag
+            | N h -> make_matcher (h, f) (make_and_matcher f t accept)  frag
 
-(* make_OR_matcher:
-   fun associative_list -> any(any(match prefix && accept suffix) in predicate) in associate_list) *)
-let rec make_or_matcher make_a_matcher = function
-  | [] -> fun accept frag -> accept frag
-  | h::t ->  let or_rest = make_or_matcher make_a_matcher t in
-             fun accept frag -> match make_a_matcher h accept frag with
-                                | Some orMatch -> orMatch
-                                | None -> or_rest accept frag
+(* make_or_matcher
+ returns a matcher which is the logical OR of a series of matchers *)
+and make_or_matcher f = function
+  | [] -> fun accept frag ->  None
+  | h::t -> fun accept frag ->
+            match make_and_matcher f h accept frag with
+            | None -> make_or_matcher f t accept frag
+            | Some accepted_suffix -> Some accepted_suffix
 
 (* make_matcher:
-   fun grammarType2 -> (fun accept frag -> any(matcher prefix accept suffix) in frag) *)
-let make_matcher gram =
+   returns a matcher which tests if any of a series of matchers passes a frag *)
+and make_matcher gram =
   let root, production_function = gram in
+  let make_a_matcher =  make_or_matcher production_function in
   match production_function root with
   | [] -> fun accept frag -> None
-  | alternative_list ->
-     let rec make_a_matcher = function
-       | [] -> fun accept frag -> accept frag
-       | rhs -> match List.hd rhs with
-                | T h -> fun accept frag -> make_terminal_matcher make_and_matcher rhs accept frag
-                | N h -> fun accept frag -> make_and_matcher make_a_matcher rhs accept frag
-     in make_or_matcher make_a_matcher alternative_list accept frag
+  | alt_list -> make_a_matcher alt_list
