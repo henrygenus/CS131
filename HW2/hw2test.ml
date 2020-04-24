@@ -15,38 +15,41 @@ let awkish_grammar =
   (Expr,
    function
      | Expr ->
-         [(*[N Term; N Binop; N Expr];*)
+         [[N Term; N Binop; N Expr];
           [N Term]]
      | Term ->
 	 [[N Num];
 	  [N Lvalue];
-(*	  [N Incrop; N Lvalue];*)
+	  [N Incrop; N Lvalue];
 	  [N Lvalue; N Incrop];
 	  [T"("; N Expr; T")"]]
      | Lvalue ->
 	 [[T"$"; N Expr]]
      | Incrop ->
 	 [[T"++"];
-(*	  [T"--"]*)]
- (*    | Binop ->
+	  [T"--"]]
+     | Binop ->
 	 [[T"+"];
-	  [T"-"]]*)
+	  [T"-"]]
      | Num ->
-	 [(*[T"0"]; [T"1"]; [T"2"]; [T"3"]; [T"4"];*)
-	  [T"5"]; (*[T"6"]; [T"7"]; [T"8"]; [T"9"]*)])
-(*
+	 [[T"0"]; [T"1"]; [T"2"]; [T"3"]; [T"4"];
+	  [T"5"]; [T"6"]; [T"7"]; [T"8"]; [T"9"]])
+
 let test0 =
-  (make_matcher awkish_grammar accept_all ["ouch"])
+  ((make_matcher awkish_grammar accept_all ["ouch"])
+   = None)
 
 let test1 =
   ((make_matcher awkish_grammar accept_all ["9"])
    = Some [])
 
 let test2 =
-  (make_matcher awkish_grammar accept_all ["9"; "+"; "$"; "1"; "+"])
+  ((make_matcher awkish_grammar accept_all ["9";"+"; "$"; "1"; "+"])
+   = Some["+"])
 
 let test3 =
-  (make_matcher awkish_grammar accept_empty_suffix ["9"; "+"; "$"; "1"; "+"])
+  ((make_matcher awkish_grammar accept_empty_suffix ["9"; "+"; "$"; "1"; "+"])
+  = None)
 
 (* This one might take a bit longer.... *)
 let test4 =
@@ -55,21 +58,19 @@ let test4 =
       "("; "$"; "++"; "$"; "2"; "+"; "("; "8"; ")"; "-"; "9"; ")";
       "-"; "("; "$"; "$"; "$"; "$"; "$"; "++"; "$"; "$"; "5"; "++";
       "++"; "--"; ")"; "-"; "++"; "$"; "$"; "("; "$"; "8"; "++"; ")";
-      "++"; "+"; "0"]))
+      "++"; "+"; "0"])
+ = Some[])
 
 let test5 =
   (parse_tree_leaves (Node ("+", [Leaf 3; Node ("*", [Leaf 4; Leaf 5])]))
    = [3; 4; 5])
-<<<<<<< Updated upstream
-*)
-=======
->>>>>>> Stashed changes
-(*
+
+
 let small_awk_frag = ["$"; "1"; "++"; "-"; "2"]
 
 let test6 =
-  ((make_parser awkish_grammar small_awk_frag)
-   = Some (Node (Expr,
+  (make_parser awkish_grammar small_awk_frag)
+(*   = Some (Node (Expr,
 		 [Node (Term,
 			[Node (Lvalue,
 			       [Leaf "$";
@@ -83,14 +84,8 @@ let test6 =
 		  Node (Expr,
 			[Node (Term,
 			       [Node (Num,
-				      [Leaf "2"])])])])))
+				      [Leaf "2"])])])])))*)
 let test7 =
   match make_parser awkish_grammar small_awk_frag with
     | Some tree -> parse_tree_leaves tree = small_awk_frag
     | _ -> false
-*)
-<<<<<<< Updated upstream
-
-let customtest = ((make_matcher awkish_grammar accept_all ["("; "$"; "5";"++"; ")"]))
-=======
->>>>>>> Stashed changes
