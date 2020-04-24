@@ -48,44 +48,69 @@ let rec parse_tree_leaves tree =
 
 (* 3 *)
 
-let accept_none = fun accept frag -> None
-let accept_all = fun accept frag -> Some frag
-let match_empty = fun accept frag -> accept frag
 
-(* make_terminal_matcher:
-   returns a matcher which matches a frag if the head matches a terminal *)
-let make_terminal_matcher leaf =
-  fun accept -> function | leaf::t -> accept t | _ -> None
+(* asynchronously build and run a pair of matchers in series *)
+let make_in_series head_matcher make_tail_matcher tail =
+  fun accept frag -> head_matcher (make_tail_matcher tail accept) frag
 
-let make_node_matcher production_function = function
-  | T node -> make_terminal_matcher (node : string)
-  | N node -> make_matcher (node, production_function)
+(* asynchronously build and run a pair of matchers in parallel *)
+let make_in_parallel head_matcher make_tail_matcher tail =
+  fun accept frag -> match head_matcher accept frag with
+                     | Some suf -> Some suf
+                     | None -> (make_tail_matcher tail) accept frag
 
-let append_matchers matcher1 matcher2 =
-  fun accept frag -> matcher1 (fun suf -> matcher2 accept suf) frag
+(* returns a matcher which matches a frag if the head matches a terminal *)
+let make_terminal_matcher leaf accept = function
+  | [] -> None
+  | h::t -> if h = leaf then accept t else None
 
-let parallel_matchers matcher1 matcher2 =
-  fun accept frag -> match matcher1 accept frag with
-                     | None -> matcher2 accept frag
-                     | suffix -> suffix
+(* returns a matcher which is the logical AND of a set of matchers *)
+let rec make_and_matcher mam = function
+  | [] -> fun accept frag -> accept frag
+  | h::t -> let make_tail_matcher = make_and_matcher mam in
+            make_in_series (mam h) make_tail_matcher t
 
-(* make_and_matcher:
-   returns a matcher which is the logical AND of a series of matchers *)
-let rec make_and_matcher f = function
-  | [] -> match_empty
-  | h::t -> append_matchers (make_node_matcher f h) (make_and_matcher f t)
+(* returns a matcher which is the logical OR of a set of matchers *)
+let rec make_or_matcher mam = function
+  | [] -> fun accept frag -> None
+  | h::t -> let make_tail_matcher = (make_or_matcher mam) in
+            make_in_parallel (make_and_matcher mam h) make_tail_matcher t
 
-(* make_or_matcher
- returns a matcher which is the logical OR of a series of matchers *)
-let rec make_or_matcher f = function
-  | [] ->  accept_none
-  | h::t -> parallel_matchers (make_and_matcher f h) (make_or_matcher f t)
+(* returns a matcher which matches the root of a type2 grammar *)
+let make_matcher (root, production_function) =
+  let rec make_a_matcher = function
+    | T node -> make_terminal_matcher node
+    | N node -> make_or_matcher make_a_matcher (production_function node)
+  in make_or_matcher make_a_matcher (production_function root)
 
-(* make_matcher:
-   returns a matcher which tests if any of a series of matchers passes a frag *)
-let make_matcher gram =
-  let root, production_function = gram
-  in let make_a_matcher =  make_or_matcher production_function
-     in match production_function root with
-        | [] -> accept_none
-        | alt_list -> make_a_matcher alt_list
+
+(* 4 *)
+
+
+(* capture all the subtrees of the first rhs to fully build a subtree *)
+let make_nonterminal_parser f make_a_parser node =
+  let rec build_subtree frag = function
+    | [] -> Some []
+    | h::t -> match make_matcher (h, f) (fun suf -> Some suf) frag with
+              | None -> None
+              | Some suffix ->
+                 match build_subtree suffix t with
+                 | None -> None
+                 | Some tree -> Some ((make_a_parser h frag) @ tree)
+  in fun frag -> List.find_map (build_subtree frag) (f node)
+               (* can just use matcher to find *)
+
+(* captures a leaf if there are no leftover character*)
+let make_terminal_parser node =
+  let attach_leaf = function [] -> node | _ -> None
+  in make_terminal_matcher node attach_leaf
+
+(* returns a parser which builds parse trees for acceptable sentences *)
+let make_parser (root, production_function) =
+  let rec make_a_parser = function
+    | T node -> make_terminal_parser node
+    | N node -> make_nonterminal_parser production_function make_a_parser node
+  in match make_nonterminal_parsers f make_a_parser root with
+     | Some tree -> Node (root, tree)
+     | None -> None
+
