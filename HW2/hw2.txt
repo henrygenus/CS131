@@ -1,0 +1,73 @@
+The general approach to MAKE_MATCHER was to create a series of matchers
+	for the grammar, and then to join them together, using:
+
+make_in_series 
+	INPUT: a matcher and the components to make a second
+	OUTPUT: a function which evaluates the first matcher, 
+		and on success evaluates the second on the
+		output of the first
+
+make_in_parallel 
+	INPUT: a matcher and the components to make a second
+	OUTPUT: a function which evaluates the first matcher, 
+		and on failure evaluates the second on the
+		same list
+
+make_terminal_matcher
+	INPUT: a terminal node
+	OUTPUT: a matcher which applies the acceptor iff the input head 
+		matches the node supplied on creation
+
+make_and_matcher 
+	INPUT: a right-hand-side of a rule
+	OUTPUT: a matcher which evaluates to true iff all components
+		of the right-hand-side are matched and the acceptor
+		accepts the suffix
+
+make_or_matcher
+	INPUT: an associative list
+	OUTPUT: a matcher which evaluates to true if any of the 
+		right-hand-side's of the list evaluate true 
+		according to make_and_matcher
+
+make_matcher
+	INPUT: a type 2 grammar
+	OUTPUT: a version of make_or_matcher preloaded with the 
+		associative list for the grammar provided.
+	This function also declares a switch to determine the
+		behavior for different types of nodes, which is
+		passed between the AND and OR functions
+
+
+MAKE_PARSER was then implemented in terms of MAKE_GRAMMAR using:
+
+butlast
+	INPUT: a list and an integer
+	OUTPUT: the input list without the last INT objects
+	This function is identical to the lisp function getlast
+
+
+build_tree
+	INPUT: a list of right-hand-sides
+	OUTPUT: a parser which attempts to create a parse tree
+		that matches the given right-hand-side
+	This function calls MAKE_A_MATCHER on the head of its
+		symbol list.  It uses itself as the acceptor
+		with the tail of the rule list.  In doing so,
+		it guarantees it only has to build the tree if
+		the tree is a perfect match
+
+make_parser
+	INPUT: a type 2 style grammar
+	OUTPUT: a parser which attempts to build a parse tree
+		for any input list
+	This function simply declares the switches that tell
+		BUILD_TREE what functions to use to build and
+		evaluate trees, then calls List.find_map with
+		build_tree on the associative list of the 
+		provided root node.
+
+
+There are a few special cases for make_a_parser:
+	on left-recursive grammars it will hit an infinite loop
+	on ambiguous grammars it will prioritize earlier listed rules
