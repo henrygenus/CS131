@@ -1,3 +1,4 @@
+
 let accept_all string = Some string
 let accept_empty_suffix = function
    | _::_ -> None
@@ -72,7 +73,7 @@ let test6 =
   (make_parser awkish_grammar small_awk_frag)
 (*   = Some (Node (Expr,
 		 [Node (Term,
-			[Node (Lvalue,
+			[Node (Lvalue, (*didn't explore further *)
 			       [Leaf "$";
 				Node (Expr,
 				      [Node (Term,
@@ -87,5 +88,5 @@ let test6 =
 				      [Leaf "2"])])])])))*)
 let test7 =
   match make_parser awkish_grammar small_awk_frag with
-    | Some tree -> parse_tree_leaves tree = small_awk_frag
-    | _ -> false
+    | Some tree -> parse_tree_leaves tree
+    | _ -> []
