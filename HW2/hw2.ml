@@ -6,30 +6,25 @@ type ('nonterminal, 'terminal) symbol =
   | N of 'nonterminal
   | T of 'terminal
 
+
+(* 1 *)
+
 let first two_tuple = let ret, _ = two_tuple in ret
 let second two_tuple = let _, ret = two_tuple in ret
 let is_key key pair = (first pair) = key
-
-
-(* 1 *)
 
 (* convert_rules:
    fun grammarType1 -> associative_list *)
 let rec convert_rules gram1 =
   let start_symbol, rules = gram1 in
-  if ((List.length rules) = 0) then [] else
-    (* get rules rooted at START_SYMBOL *)
+  if (List.length rules) = 0 then [] else
     let rules_for_symbol, rest = List.partition (is_key start_symbol) rules in
-    (* merge the predicates of rules for start_symbol *)
     let _, alternative_list = List.split rules_for_symbol in
-    (* if no rules left to convert, return grammar 2 type rules *)
     let g2_rules = [(start_symbol, alternative_list)] in
-    if ((List.length rest) = 0) then g2_rules else
-      (* else recursive call on rest of rules *)
-      g2_rules@(convert_rules ((first (List.hd rest)), rest))
+    if (List.length rest) = 0 then g2_rules else
+      g2_rules @ (convert_rules ((first (List.hd rest)), rest))
 
-(* convert_grammar:
-   grammarType1 -> grammarType2 *)
+(* convert a type 1 grammar to a type 2 grammar (~ BNF -> EBNF) *)
 let convert_grammar gram1 =
   let grammar_two_rules = convert_rules gram1 in
   let start_symbol = (first gram1) in
@@ -48,7 +43,6 @@ let rec parse_tree_leaves tree =
 
 (* 3 *)
 
-
 (* asynchronously build and run a pair of matchers in series *)
 let make_in_series head_matcher make_tail_matcher tail =
   fun accept frag -> head_matcher (make_tail_matcher tail accept) frag
@@ -62,7 +56,7 @@ let make_in_parallel head_matcher make_tail_matcher tail =
 (* returns a matcher which matches a frag if the head matches a terminal *)
 let make_terminal_matcher leaf accept = function
   | [] -> None
-  | h::t -> if h = leaf then accept t else None
+  | h::t -> if (h : string) = leaf then accept t else None
 
 (* returns a matcher which is the logical AND of a set of matchers *)
 let rec make_and_matcher mam = function
@@ -87,46 +81,35 @@ let make_matcher (root, production_function) =
 (* 4 *)
 
 
-let rec split_at_n frag index=
-  let rec split frag l = function
-  | 0 -> Some (List.rev frag, l)
-  | n -> split (List.tl frag) (List.hd frag::l) (n - 1)
-  in split (List.rev frag) [] index
+(* identical to the lisp function BUTLAST *)
+let rec butlast frag index =
+  let rec loop frag  = function
+  | 0 -> List.rev frag
+  | n -> loop (List.tl frag) (n - 1)
+  in loop (List.rev frag) index
 
-let try_cons e = function
-  | None -> None
-  | Some l2 -> Some (e::l2)
-
-let rec build_subtree make_a_parser f node = fun frag ->
-  let rec build_tree frag = function
-    | [] -> Some []
-    | h::t -> match make_a_parser h frag with
-              | None -> None
-              | Some (subtree, suf) -> try_cons subtree (build_tree suf t)
-  in match List.find_map (build_tree frag) (f node) with
-     | None -> None
-     | Some tree -> Some (Node (node, tree))
-
-(* captures a leaf if matches *)
-let make_terminal_parser node = fun frag ->
-  make_terminal_matcher node (function | suf ->  Some (Leaf node, suf)) frag
-
-(* capture all the subtrees of the first rhs to fully build a subtree *)
-let rec make_nonterminal_parser map f node = fun frag ->
-  let split_frag = (fun l -> split_at_n frag (List.length l)) in
-  match make_matcher (node, f) split_frag frag with
-  | None -> None
-  | Some (prefix, suffix) -> build_subtree map f node prefix
-                               | Some (Node tree) -> Some (tree, suffix)
-                               | _ -> None
+(* build a tree for a given node *)
+let rec build_tree make_a_tree make_rest_trees nodes = fun suf ->
+  if suf = [] then if nodes = [] then Some [] else None else
+    match nodes with
+    | [] -> None
+    | h::t ->
+       match make_rest_trees suf t h with
+       | None -> None
+       | Some trees ->
+          match make_a_tree h (butlast suf (List.length trees)) with
+          | None -> None
+          | Some tree -> Some (tree::trees)
 
 (* returns a parser which builds parse trees for acceptable sentences *)
-let rec make_parser (root, production_function) = fun frag ->
-  let rec make_a_parser = function
-    | T node -> make_terminal_parser node
-    | N node -> make_nonterminal_parser make_a_parser production_function node
-  in let build_tree = build_subtree make_a_parser production_function root
-     in let try_build = function [] -> build_tree frag | _ -> None
-        in match make_matcher (root, production_function) try_build frag with
-             | Some _ as tree -> tree
-             | None -> None
+let rec make_parser (node, prod_fun) = fun frag ->
+  let mat = function
+    | T n -> make_terminal_matcher n (function _ -> Some(Leaf n))
+    | N n -> make_parser (n, prod_fun)
+  in let rec mrt suf rest = function
+       | T n -> (build_tree mat mrt rest) (List.tl suf)
+       | N n -> make_matcher (n, prod_fun) (build_tree mat mrt rest) suf
+     in let tree_builder = fun rhs -> build_tree mat mrt rhs frag
+        in match List.find_map tree_builder (prod_fun node) with
+           | Some tree -> Some (Node (node,  tree))
+           | None -> None
