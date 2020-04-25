@@ -92,7 +92,7 @@ let test5 =
    = [3; 4; 5])
 
 
-let small_awk_frag = ["(";"$"; "1"; "++"; "-"; "2"; ")"]
+let small_awk_frag = ["$"; "1"; "++"; "-"; "2"]
 
 let test6 =
   (make_parser awkish_grammar small_awk_frag)
@@ -111,7 +111,7 @@ let test6 =
 			[Node (Term,
 			       [Node (Num,
 				      [Leaf "2"])])])]))
-    
+
 let test7 =
   match make_parser awkish_grammar small_awk_frag with
     | Some tree -> parse_tree_leaves tree = small_awk_frag
