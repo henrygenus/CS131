@@ -1,13 +1,38 @@
+(* My test case is listed directly below; it is followed by provided cases *)
+
+type my_nonterminals = A | B | C
+
+let my_grammar =
+  (A, function
+   | A ->
+      [[N B];
+      [N B; T"+"; N A]]
+   | B ->
+      [[N C];
+       [T"("; N A; T")"]]
+   | C ->
+      [[T"*"];
+       [T"@"]])
+
+let short_acceptor = (fun x -> if (List.length x) < 7 then Some x else None)
+let my_frag = ["("; "*"; "+"; "@"; ")"; "+"; "@"; "+"; "("; "*"; "+"; "@"; ")"]
+let my_pre = ["("; "*"; "+"; "@"; ")"; "+"; "@"]
+let my_suf = ["+"; "("; "*"; "+"; "@"; ")"]
+
+let make_matcher_test =
+  make_matcher my_grammar short_acceptor my_frag = Some (my_suf)
+
+let make_parser_test =
+  match make_parser my_grammar my_pre with
+  | Some tree -> (parse_tree_leaves tree) = my_pre
+  | _ -> false
+
+(* BEGIN PROVIDED CASES *)
 
 let accept_all string = Some string
 let accept_empty_suffix = function
    | _::_ -> None
    | x -> Some x
-
-(* An example grammar for a small subset of Awk.
-   This grammar is not the same as Homework 1; it is
-   instead the same as the grammar under
-   "Theoretical background" above.  *)
 
 type awksub_nonterminals =
   | Expr | Term | Lvalue | Incrop | Binop | Num
@@ -67,26 +92,27 @@ let test5 =
    = [3; 4; 5])
 
 
-let small_awk_frag = ["$"; "1"; "++"; "-"; "2"]
+let small_awk_frag = ["(";"$"; "1"; "++"; "-"; "2"; ")"]
 
 let test6 =
   (make_parser awkish_grammar small_awk_frag)
-(*   = Some (Node (Expr,
-		 [Node (Term,
-			[Node (Lvalue, (*didn't explore further *)
-			       [Leaf "$";
-				Node (Expr,
-				      [Node (Term,
-					     [Node (Num,
-						    [Leaf "1"])])])]);
-			 Node (Incrop, [Leaf "++"])]);
-		  Node (Binop,
-			[Leaf "-"]);
-		  Node (Expr,
+  = Some (Node (Expr,
+		[Node (Term,
+		       [Node (Lvalue,
+			      [Leaf "$";
+			       Node (Expr,
+				     [Node (Term,
+					    [Node (Num,
+						   [Leaf "1"])])])]);
+			Node (Incrop, [Leaf "++"])]);
+		 Node (Binop,
+		       [Leaf "-"]);
+		 Node (Expr,
 			[Node (Term,
 			       [Node (Num,
-				      [Leaf "2"])])])])))*)
+				      [Leaf "2"])])])]))
+    
 let test7 =
   match make_parser awkish_grammar small_awk_frag with
-    | Some tree -> parse_tree_leaves tree
-    | _ -> []
+    | Some tree -> parse_tree_leaves tree = small_awk_frag
+    | _ -> false
