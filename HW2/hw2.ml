@@ -107,7 +107,7 @@ let rec make_parser (node, prod_fun) = fun frag ->
     | T n -> make_terminal_matcher n (function _ -> Some(Leaf n))
     | N n -> make_parser (n, prod_fun)
   in let rec mrt suf rest = function
-       | T n -> (build_tree mat mrt rest) (List.tl suf)
+       | T n -> build_tree mat mrt rest (List.tl suf)
        | N n -> make_matcher (n, prod_fun) (build_tree mat mrt rest) suf
      in let tree_builder = fun rhs -> build_tree mat mrt rhs frag
         in match List.find_map tree_builder (prod_fun node) with
