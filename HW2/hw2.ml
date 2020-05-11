@@ -56,7 +56,7 @@ let make_in_parallel head_matcher make_tail_matcher tail =
 (* returns a matcher which matches a frag if the head matches a terminal *)
 let make_terminal_matcher leaf accept = function
   | [] -> None
-  | h::t -> if (h : string) = leaf then accept t else None
+  | h::t -> if h = leaf then accept t else None
 
 (* returns a matcher which is the logical AND of a set of matchers *)
 let rec make_and_matcher mam = function
@@ -90,16 +90,17 @@ let rec butlast frag index =
 
 (* build a tree for a given node *)
 let rec build_tree make_a_tree make_rest_trees nodes = fun suf ->
-  if suf = [] then if nodes = [] then Some [] else None else
-    match nodes with
-    | [] -> None
-    | h::t ->
-       match make_rest_trees suf t h with
-       | None -> None
-       | Some trees ->
-          match make_a_tree h (butlast suf (List.length trees)) with
-          | None -> None
-          | Some tree -> Some (tree::trees)
+  match suf, nodes with
+  | [], [] -> Some []
+  | [], _  -> None
+  |  _, [] -> None
+  | _, h::t ->
+     match make_rest_trees suf t h with
+     | None -> None
+     | Some trees ->
+        match make_a_tree h (butlast suf (List.length trees)) with
+        | None -> None
+        | Some tree -> Some (tree::trees)
 
 (* returns a parser which builds parse trees for acceptable sentences *)
 let rec make_parser (node, prod_fun) = fun frag ->

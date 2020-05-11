@@ -27,6 +27,7 @@ let make_parser_test =
   | Some tree -> (parse_tree_leaves tree) = my_pre
   | _ -> false
 
+
 (* BEGIN PROVIDED CASES *)
 
 let accept_all string = Some string
@@ -116,3 +117,44 @@ let test7 =
   match make_parser awkish_grammar small_awk_frag with
     | Some tree -> parse_tree_leaves tree = small_awk_frag
     | _ -> false
+
+let ptest0 =
+  ((make_parser awkish_grammar ["ouch"])
+   = None)
+
+let ptest1 =
+  ((make_parser awkish_grammar ["9"])
+   = Some (Node (Expr,
+                 [Node (Term,
+                        [Node (Num,
+                               [Leaf "9"])])])))
+
+let ptest2 =
+  ((make_parser awkish_grammar ["9";"+"; "1"])
+   = Some (Node (Expr,
+                 [Node (Term,
+                        [Node (Num,
+                               [Leaf "9"])]);
+                  Node (Binop,
+                        [Leaf "+"]);
+                  Node (Expr,
+                        [Node (Term,
+                               [Node (Num,
+                                      [Leaf "1"])])])])))
+
+let ptest3 =
+  ((make_parser awkish_grammar ["$"; "1"])
+  = Some (Node (Expr,
+                [Node (Term,
+                       [Node (Lvalue,
+                              [Leaf "$";
+                               Node (Expr,
+                                     [Node (Term,
+                                            [Node (Num,
+                                                   [Leaf "1"])])])])])])))
+
+let ptest4 =
+  ((make_parser awkish_grammar ["++"; "$"; "1"]))
+
+let ptest5 =
+  ((make_parser awkish_grammar ["9"; "+"; "$"; "1"; "++"]))
