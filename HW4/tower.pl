@@ -3,7 +3,8 @@ ambiguous(N, C, T1, T2) :-
         N > 0,
         tower(N, T1, C),
         tower(N, T2, C),
-        T1 \== T2.
+        T1 \== T2,
+        !.
 
 % compute the ratio of the speed of plain_tower & tower
 speedup(FPR) :-
@@ -19,16 +20,29 @@ speedup(FPR) :-
 
 % SOLUTION THAT UTILIZES FINITE DOMAIN SOLVER
 tower(N, T, counts(U, D, L, R)) :-
+        maplist(length_wrapper(N), [U, D, L, R]),
         length(T, N),
         maplist(length_wrapper(N), T),
         maplist(maplist(fd_domain_wrapper(1, N)), T),
         maplist(fd_all_different, T),
         transpose(T, NT),
         maplist(fd_all_different, NT),
-        maplist(fd_labeling, T),
-        maplist(verify_counts, T, L, R),
-        maplist(verify_counts, NT, U, D).
+        maplist(restrict_counts, T, L, R),
+        maplist(restrict_counts, NT, U, D),
+        maplist(fd_labeling, T).
 
+restrict_counts([H|T], L, R) :-
+        restrict_count(T, H, L),
+        reverse([H|T], [NH|NT]),
+        restrict_count(NT, NH, R).
+restrict_count([], _, 1).
+restrict_count([H|T], M, Ct) :-
+        H #> M,
+        NCt #= Ct - 1,
+        restrict_count(T, H, NCt).
+restrict_count([H|T], M, Ct) :-
+        H #=< M,
+        restrict_count(T, M, Ct).
 
 fd_domain_wrapper(Low, High, List) :- fd_domain(List, Low, High).
 length_wrapper(Length, List) :- length(List, Length).
@@ -81,7 +95,8 @@ exists(X, [_|T]) :- exists(X, T).
 verify_counts(List, Pre_Count, Post_Count) :-
         visible_count(List, Pre_Count),
         reverse(List, Tsil),
-        visible_count(Tsil, Post_Count).
+        visible_count(Tsil, Post_Count),
+        !.
 % verify the number of visible towers in row [H|T] is N
 visible_count([H|T], N) :-
         visible(T, [H], Result),

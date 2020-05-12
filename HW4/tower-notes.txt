@@ -1,0 +1,29 @@
+In a complicated test case, the FD solver was 568 times faster than enumeration!
+
+?- speedup(T).
+T = 568.0
+(569 ms) yes
+
+Test Case: (plain_)tower(5, _, counts([5,3,3,2,1],[1,2,3,3,2],[5,3,3,2,1],[1,2,2,3,2])).
+
+When running ambiguous, the first found problem was the following problem:
+
+ 4221
+4####1
+2####2
+2####2
+1####4
+ 1224
+
+Output:
+
+?- ambiguous(4, C, T1, T2).
+
+C = counts([4,2,2,1],[1,2,2,4],[4,2,2,1],[1,2,2,4])
+T1 = [[1,2,3,4],[2,4,1,3],[3,1,4,2],[4,3,2,1]]
+T2 = [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
+
+(1 ms) yes
+
+Code for create_grid and exists were sampled from the provided TA code at the URL:
+https://github.com/CS131-TA-team/UCLA_CS131_CodeHelp/tree/master/Prolog.
