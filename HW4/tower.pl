@@ -29,9 +29,9 @@ tower(N, T, counts(U, D, L, R)) :-
         maplist(verify_counts, T, L, R),
         maplist(verify_counts, NT, U, D).
 
+
 fd_domain_wrapper(Low, High, List) :- fd_domain(List, Low, High).
 length_wrapper(Length, List) :- length(List, Length).
-% verify that TL & L are transposes of each other
 transpose(TL, L) :- transpose(TL, L, 0), !.
 transpose(TL, [], N):- length(TL, N).
 transpose(TL, [L1|L], N) :-
@@ -46,6 +46,7 @@ plain_tower(N, T, counts(U, D, L, R)) :-
         match_col_counts(T, U, D).
 
 % fill in a 2D array with lists of fixed length (N)
+% https://github.com/CS131-TA-team/UCLA_CS131_CodeHelp/blob/master/Prolog/plain_domain.pl
 within_domain(N, Domain) :-
     findall(X, between(1, N, X), Domain).
 fill_2d([], _, [], []).
@@ -58,7 +59,6 @@ create_grid(Grid, N, L, R) :-
     length(Grid, N),
     fill_2d(Grid, N, L, R).
 
-
 % verify that the visible number of towers from the top and bottom of a column is correct
 match_col_counts(T, U, D) :- match_col_counts(T, U, D, 0).
 match_col_counts(L, [], [], N) :- length(L, N).
@@ -70,12 +70,12 @@ match_col_counts(T, [UCount1|UCounts], [DCount1|DCounts], X) :-
         match_col_counts(T, UCounts, DCounts, Y).
 
 % test uniqueness of elements of a list
+% https://github.com/CS131-TA-team/UCLA_CS131_CodeHelp/blob/master/Prolog/unique_list.pl
 all_unique([]).
 all_unique([H|T]) :- exists(H, T), !, fail.
 all_unique([_|T]) :- all_unique(T).
 exists(X, [X|_]).
-exists(X, [_|T]) :-
-	exists(X, T).
+exists(X, [_|T]) :- exists(X, T).
 
 % verify the counts on either end of the list of towers are correct
 verify_counts(List, Pre_Count, Post_Count) :-
