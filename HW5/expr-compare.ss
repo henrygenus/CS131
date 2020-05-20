@@ -12,78 +12,74 @@
 ;
 ; (define test-expr-compare x y)
 
-; compares two Scheme expressions x and y,
-; produces a difference summary of the two
+; compares two Scheme expressions x & y and produces a difference summary of the two
 ;
-(define expr-compare
-  (lambda (x y)
- (expr-compare-helper x y)))
-; if next one is macro, need an extra paren
+(define (expr-compare x y)
+  (cond [(not (and (list? x) (list? y))) (expr-unify x y)]
+        [(or (eqv? (car x) 'quote) (eqv? (car y) 'quote)) (expr-compare-quote x y)]
+        [(or (eqv? (car x) 'if) (eqv? (car y) 'if)) (expr-compare-if x y)]
+        [(or (member (car x) '(lambda λ)) (member (car y) '(lambda λ))) (expr-compare-quote x y)]
+        [#t (expr-compare-funcall x y)]
+         ))
 
-(define expr-compare-helper
-   (lambda(x y)
-    (cond [(and (null? x) (null? y)) '()]
-          [(not (and (list? x) (list? y))) (arg-unify x y)]
-          [(not (eq? (null? (cdr x)) (null? (cdr y)))) (list 'if '% x y)]
-          [(and (eq? (car x) 'quote) (eq? (car y) 'quote))
-           (if (eq? (cdr x) (cdr y)) x (list 'if '% x y))]
-          [(or (member (car x) '(if lambda λ quote)) 
-               (member (car y) '(if lambda λ quote)))
-           (expr-macro-compare x y)]
-          [#t (expr-fun-compare x y)]
-          )))
-  
-(define expr-fun-compare
- (lambda(x y)
-   (let ([prefix (expr-compare-helper (car x) (car y))]
-         [rest (expr-compare-helper (cdr x) (cdr y))])
-     (null? rest) prefix (cons prefix rest))))
-   
-; find a most general unification for lists x and y
-; if (at-functor) we consider 'if 'lambda 'λ 'quote ' as macros
+; finds the most general binding for two expressions
 ;
-(define expr-macro-compare
-  (lambda (x y)
-    (if (not (eq? (car x) (car y)))
-        (let ([rest-x (expr-compare-helper (cdr x) (cdr x))]
-              [rest-y (expr-compare-helper (cdr y) (cdr y))])
-          (list 'if '%
-                (if (null? rest-x) (car x) (cons (car x) rest-x))
-                (if (null? rest-y) (car y) (cons (car y) rest-y))))
-        (expr-fun-compare x y))))
-        
-; finds a single binding which matches both X and Y
-; this may be a conditional binding dependent on '%
-;
-(define arg-unify
-  (lambda (x y)
-    (cond [(eq? x y) x]
-          [(or (boolean? x) (boolean? y)) (arg-match-bool x y)]
-          [#t (arg-match x y)])))
-
-; finds single binding for both X and Y
-; this merges (lambda|λ) to λ and ('|quote) to '
-; if X and Y are unequal, return ('if '% X Y); else return X
-;
-(define arg-match
-  (lambda (x y)
-    (cond [(or (and (eq? x "lambda") (eq? y "λ"))
-               (and (eq? x "λ") (eq? y "lambda")))
-           '(λ)]
-          [(or (and (eq? x 'quote) (eq? y "'"))
-               (and (eq? x "'") (eq? y 'quote)))
-           "'"]
-          [(eq? x y) x]
-          [#t (list 'if '% x y)])))
+(define (expr-unify x y)
+  (if (or (boolean? x) (boolean? y))
+      (atom-unify-bool x y)
+      (atom-unify x y)))
 
 ; merge booleans before finding a single binding which matches both X and Y
 ; transforms: {#t & #t ->#t, #f & #f -> #f, #t & #f -> '%, #f & #t -> '(not %)}
 ; second level: {y/#t -> '(not %), y/#f -> '%, x/#t -> '%, x/#f -> '(not%)}
 ;
-(define arg-match-bool
-  (lambda (x y)
-    (cond [(and (eq? x #t) (eq? y #f)) '%]
-          [(and (eq? x #f) (eq? y #t)) '(not %)]
-          [#t (let ([x (cond [(eq? x #t) '%] [(eq? x #f) '(not %)] [#t x])]
-                    [y (cond [(eq? y #t) '(not %)] [(eq? y #f) '%] [#t y])])
-                (arg-match x y))])))
+(define (atom-unify-bool x y)
+  (cond [(and (eq? x #t) (eq? y #f)) '%]
+        [(and (eq? x #f) (eq? y #t)) '(not %)]
+        [(and (eq? x #t) (eq? y #t)) #t]
+        [(and (eq? x #f) (eq? y #f)) #f]
+        [#t (let ([x (cond [(eq? x #t) '%] [(eq? x #f) '(not %)] [#t x])]
+                  [y (cond [(eq? y #t) '(not %)] [(eq? y #f) '%] [#t y])])
+              (atom-unify x y))]))
+
+; find a single binding which satisfies both atoms -- may be conditional
+;
+(define (atom-unify x y)
+  (if (eqv? x y)
+      x
+      (list 'if '% x y)))
+
+; compares expressions of the form (FUNCTION EXPR1 ... EXPRN)
+;
+(define (expr-compare-funcall x y)
+  (if (or (null? (cdr x)) (null? (cdr y))) (list 'if '% x y)
+      (cons (expr-unify (car x) (car y))
+            (let map-compare ((x (cdr x)) (y (cdr y)))
+              (cond [(and (null? x) (null? y)) '()]
+                    [(not (eqv? (null? (cdr x)) (null? (cdr y)))) (expr-unify x y)]
+                    [#t (cons (expr-compare (car x) (car y)) (map-compare (cdr x) (cdr y)))]
+                    )))))
+
+; compares expressions of the form (quote EXPR)
+;
+(define (expr-compare-quote x y)
+  (if (not (eqv? (car x) (car y)))
+      (list 'if '% x y)
+      (atom-unify x y)))
+
+; compares expressions of the form (if EXPR EXPR EXPR)
+;
+(define (expr-compare-if x y)
+  (if (not (eqv? (car x) (car y)))
+      (list 'if '%
+            (cons (car x) (map expr-compare (cdr x) (cdr x)))
+            (cons (car y) (map expr-compare (cdr y) (cdr y))))
+      (list 'if (expr-compare (cadr x) (cadr y))
+            (expr-compare (caddr x) (caddr y))
+            (expr-compare (cadddr x) (cadddr y)))
+     ))
+
+; compares expressions of the form (lambda FORMALS EXPR)
+;
+(define (expr-compare-lambda x y)
+  '())
