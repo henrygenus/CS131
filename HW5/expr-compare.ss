@@ -1,16 +1,23 @@
 #lang racket
 (provide (all-defined-out))
 
-; variables for testing of expr-compare
-; USAGE > (test-expr-compare (test-expr x) (test-expr y)
+; variables for testing purposes
 ;
-; (define test-expr-x )
-; (define test-expr-y )
+
+(define test-expr-x '(+ 3 ((lambda (λ lambda) (if (> lambda λ) (- lambda λ) (+ lambda λ))) 2 1)))
+(define test-expr-y '(- 3 ((λ (lambda λ) (if (> lambda λ) (- lambda λ) (+ λ lambda))) 1 2)))
+(define % #t)
+(define (test-test) (test-expr-compare test-expr-x test-expr-y))
+(define (test) (expr-compare test-expr-x test-expr-y))
 
 ; function which calls expr-compare and evaluates results for %/{#t, #f)
 ; comparing the former to x and the latter to y
 ;
-; (define test-expr-compare x y)
+(define (test-expr-compare x y) ;currently not working since lambda is incomplete
+  (let ([expr (expr-compare x y)])
+    (if (and (let ([% #t]) (eqv? (eval expr) (eval x)))
+             (let ([% #f]) (eqv? (eval expr) (eval y))))
+        #t #f)))
 
 ; compares two Scheme expressions x & y and produces a difference summary of the two
 ;
@@ -18,9 +25,12 @@
   (cond [(not (and (list? x) (list? y))) (expr-unify x y)]
         [(or (eqv? (car x) 'quote) (eqv? (car y) 'quote)) (expr-compare-quote x y)]
         [(or (eqv? (car x) 'if) (eqv? (car y) 'if)) (expr-compare-if x y)]
-        [(or (member (car x) '(lambda λ)) (member (car y) '(lambda λ))) (expr-compare-quote x y)]
-        [#t (expr-compare-funcall x y)]
-         ))
+        [(or (eqv? (car x) 'λ) (eqv? (car x) 'lambda) (eqv? (car y) 'λ) (eqv? (car y) 'lambda)) (expr-compare-lambda x y)]
+        [#t (let map-compare ((x x) (y y))
+              (cond [(and (null? x) (null? y)) '()]
+                    [(not (eqv? (null? (cdr x)) (null? (cdr y)))) (expr-unify x y)]
+                    [#t (cons (expr-compare (car x) (car y))
+                              (map-compare (cdr x) (cdr y)))]))]))
 
 ; finds the most general binding for two expressions
 ;
@@ -49,17 +59,6 @@
       x
       (list 'if '% x y)))
 
-; compares expressions of the form (FUNCTION EXPR1 ... EXPRN)
-;
-(define (expr-compare-funcall x y)
-  (if (or (null? (cdr x)) (null? (cdr y))) (list 'if '% x y)
-      (cons (expr-unify (car x) (car y))
-            (let map-compare ((x (cdr x)) (y (cdr y)))
-              (cond [(and (null? x) (null? y)) '()]
-                    [(not (eqv? (null? (cdr x)) (null? (cdr y)))) (expr-unify x y)]
-                    [#t (cons (expr-compare (car x) (car y)) (map-compare (cdr x) (cdr y)))]
-                    )))))
-
 ; compares expressions of the form (quote EXPR)
 ;
 (define (expr-compare-quote x y)
@@ -76,10 +75,25 @@
             (cons (car y) (map expr-compare (cdr y) (cdr y))))
       (list 'if (expr-compare (cadr x) (cadr y))
             (expr-compare (caddr x) (caddr y))
-            (expr-compare (cadddr x) (cadddr y)))
-     ))
+            (expr-compare (cadddr x) (cadddr y)))))
+
 
 ; compares expressions of the form (lambda FORMALS EXPR)
 ;
 (define (expr-compare-lambda x y)
-  '())
+  (let ([blend-lambdas
+        (lambda (l1 l2)
+          (if (or (and (eqv? l1 'lambda) (eqv? l2 'λ))
+                  (and (eqv? l1 'λ) (eqv? l2 'lambda)))
+              'λ l1))])
+        (let ([x (cons (blend-lambdas (car x) (car y)) (cdr x))]
+              [y (cons (blend-lambdas (car y) (car x)) (cdr y))])
+          (if (not (eqv? (car x) (car y)))
+              (list 'if '%
+                    (list (car x) (cadr x) (expr-compare (caddr x) (caddr x)))
+                    (list (car y) (cadr y) (expr-compare (caddr y) (caddr y))))
+              ;(map-params (cadr x) (cadr y) (cddr x) (cddr y))
+              (list (expr-unify (car x) (car y))
+                    (cadr x) ; unified parameters
+                    (expr-compare (caddr x) (caddr y)))
+              ))))
