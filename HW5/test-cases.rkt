@@ -31,7 +31,7 @@
         (test-case '(if x y z) '(g x y z) '(if % (if x y z) (g x y z))) ;17
         (test-case '((lambda (a) (f a)) 1) '((lambda (a) (g a)) 2) ;18
                    '((lambda (a) ((if % f g) a)) (if % 1 2)))
-        (test-case '((lambda (a) (f a)) 1) '((λ (a) (g a)) 2)' ;19
+        (test-case '((lambda (a) (f a)) 1) '((λ (a) (g a)) 2) ;19
                    '((λ (a) ((if % f g) a)) (if % 1 2)))
         (test-case '((lambda (a) a) c) '((lambda (b) b) d) ;20
                    '((lambda (a!b) a!b) (if % c d)))
