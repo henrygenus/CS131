@@ -81,19 +81,32 @@
 ; compares expressions of the form (lambda FORMALS EXPR)
 ;
 (define (expr-compare-lambda x y)
-  (let ([blend-lambdas
-        (lambda (l1 l2)
-          (if (or (and (eqv? l1 'lambda) (eqv? l2 'λ))
-                  (and (eqv? l1 'λ) (eqv? l2 'lambda)))
-              'λ l1))])
-        (let ([x (cons (blend-lambdas (car x) (car y)) (cdr x))]
-              [y (cons (blend-lambdas (car y) (car x)) (cdr y))])
-          (if (not (eqv? (car x) (car y)))
-              (list 'if '%
-                    (list (car x) (cadr x) (expr-compare (caddr x) (caddr x)))
-                    (list (car y) (cadr y) (expr-compare (caddr y) (caddr y))))
-              ;(map-params (cadr x) (cadr y) (cddr x) (cddr y))
-              (list (expr-unify (car x) (car y))
-                    (cadr x) ; unified parameters
-                    (expr-compare (caddr x) (caddr y)))
+  (let ([x (cons (blend-lambdas (car x) (car y)) (cdr x))]
+        [y (cons (blend-lambdas (car y) (car x)) (cdr y))])
+    (if (or (not (eqv? (car x) (car y))) (not (= (length (cadr x)) (length (cadr y)))))
+        (list 'if '%
+              (list (car x) (cadr x) (expr-compare (caddr x) (caddr x)))
+              (list (car y) (cadr y) (expr-compare (caddr y) (caddr y))))
+        
+        (cons (expr-unify (car x) (car y))
+              (lambda-blend-params (cadr x) (cddr x) (cadr y) (cddr y))
               ))))
+
+(define (blend-lambdas l1 l2)
+  (if (or (and (eqv? l1 'lambda) (eqv? l2 'λ))
+          (and (eqv? l1 'λ) (eqv? l2 'lambda)))
+      'λ l1))
+
+; compares parameters for x and y, blending if necessary
+; invariant: len params x = len params y
+;
+(define (lambda-blend-params x-param x-expr y-param y-expr)
+  (let ([new-params (map (lambda (x y) (if (eq? x y) x  
+  (let (map-params new-params old-params exprs)
+    (cond [(null? map-params) exprs]
+          [(map (lambda x) (eqv? x (car new-params
+
+               ; map parameters
+               ; compare expressions
+               ; ret '(params exprs)'
+  
