@@ -87,7 +87,6 @@
         (list 'if '%
               (list (car x) (cadr x) (expr-compare (caddr x) (caddr x)))
               (list (car y) (cadr y) (expr-compare (caddr y) (caddr y))))
-        
         (cons (expr-unify (car x) (car y))
               (lambda-blend-params (cadr x) (cddr x) (cadr y) (cddr y))
               ))))
@@ -101,10 +100,7 @@
 ; invariant: len params x = len params y
 ;
 (define (lambda-blend-params x-param x-expr y-param y-expr)
-  (let ([new-params (map (lambda (x y) (if (eq? x y) x  
-  (let (map-params new-params old-params exprs)
-    (cond [(null? map-params) exprs]
-          [(map (lambda x) (eqv? x (car new-params
+  (list (atom-unify x-param y-param) (expr-compare x-expr y-expr)))
 
                ; map parameters
                ; compare expressions
