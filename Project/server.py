@@ -2,6 +2,7 @@
 # import aiohttp
 import json
 import time
+from message import *
 
 # port 12000, 12001, 12002, 12003, 12004
 # error checking not yet implemented
@@ -37,41 +38,6 @@ class Server:
 #    __call__()
 #    get_client_name()
 # anything else can be below the surface
-
-# ######### MESSAGE CLASSES ######### #
-
-
-class QueryMessage:
-    def __init__(self, message):
-        self.m_client_name = message[3]
-
-    def __call__(self):
-        pass
-
-    def get_client_name(self):
-        return self.m_client_name
-
-
-class AssertionMessage:
-    def __init__(self, message):
-        self.m_client_name = message[3]
-
-    def __call__(self):
-        pass
-
-    def get_client_name(self):
-        return self.m_client_name
-
-
-class ReportMessage:
-    def __init__(self, message):
-        self.m_client_name = message[3]
-
-    def __call__(self):
-        pass
-
-    def get_client_name(self):
-        return self.m_client_name
 
 
 def main():
