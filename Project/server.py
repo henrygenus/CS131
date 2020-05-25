@@ -14,6 +14,13 @@ class Server:
         self.m_history = dict()
         self.m_connections = dict()
 
+    def get_name(self):
+        return self.m_name
+
+    def connect_server(self, servers):
+        for name, port_number in servers:
+            self.m_connections[name] = port_number
+
     def process_message(self, message):
         words = message.split()
         message_handler = {
@@ -24,13 +31,10 @@ class Server:
         response: Report = message_handler[words[0]](words[1:])
         return self.log(response)
 
-    def report_handler(self, message):
-        # send msg to communicable servers besides sender (message[1])
-        return Report(message)
-
-    def connect_server(self, servers):
-        for name, port_number in servers:
-            self.m_connections[name] = port_number
+    def report_handler(self, msg_words):
+        msg = Report(msg_words)
+        self.flood(msg)
+        return msg
 
     def assertion_handler(self, message):
         client_name, long_lat, send_time = message
@@ -39,27 +43,46 @@ class Server:
                       client_name,
                       long_lat,
                       send_time])
-        # send msg to communicable servers
+        if msg == self.m_history[msg.get_client_name]:
+            pass
+        else:
+            self.flood(msg)
         return msg
 
     def query_handler(self, message):
         client_name, radius, result_count = message
         msg = self.m_history[client_name]
-        # ask google for location
-        # send message and JSON back to client
+        self.location_search(msg.get_location, radius, result_count)
+        # record/send message and JSON back to client
         return msg
 
-    # logs a Report object to logfile and history
-    def log(self, msg):
-        self.m_history[msg.m_client_name] = msg
-        with open(self.m_filename, 'w+') as logfile:
-            logfile.write(msg())
+    def location_search(self, location, radius, result_count):
+        # query google for nearby
+        pass
 
     def run(self):
-        # loop with async I/O
-        # (async) await read (message)
-        # msg = processMessage(message)
-        pass
+        while True:  # loop with async I/O
+            # (async) await read (message)
+            message = ""  # null declaration to run
+            self.process_message(message)
+
+    def record(self, msg):
+        self.m_history[msg.m_client_name] = msg
+        self.log(msg())
+
+    def log(self, msg):
+        with open(self.m_filename, 'w+') as logfile:
+            logfile.write(msg)
+        return msg
+
+    def flood(self, msg):
+        for server in self.m_connections.values():
+            try:
+                msg.send(server)
+            except IOError:
+                self.log("Server " + server.get_name() + " disconnected")
+                pass
+            pass
 
     def dump(self):
         for message in self.m_history.values():
@@ -68,6 +91,7 @@ class Server:
             print("Connected to:" + server)
 
 
+# FORMAT: SERVER_NAME DTIME CLIENT_NAME LONG_LAT SEND_TIME
 class Report:
     def __init__(self, message):
         self.m_server_name,\
@@ -86,6 +110,19 @@ class Report:
 
     def get_client_name(self):
         return self.m_client_name
+
+    def get_location(self):
+        return self.m_long_lat
+
+    def send(self, recipient):
+        try:
+            int(recipient)
+            # send self message to recipient port number
+            pass
+        except TypeError:
+            # async error
+            # send self message to recipient address
+            pass
 
 
 def main():
