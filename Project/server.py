@@ -1,25 +1,60 @@
-# import asyncio
+import asyncio
+import sys
 from time import time
 # import aiohttp
 
 # port 12000, 12001, 12002, 12003, 12004
 # error checking not yet implemented
+#local ports:
+#      port_dict = {
+#         'Hill': 8000,
+#         'Jaquez': 8001,
+#         'Smith': 8002,
+#         'Campbell': 8003,
+#         'Singleton': 8004
+#     }
 
 
 class Server:
-    def __init__(self, name, port):
+    def __init__(self, name, port, servers):
         self.m_name = name
         self.m_port = port
         self.m_filename = str(name) + "_log.txt"
         self.m_history = dict()
         self.m_connections = dict()
+        self.m_server = None
+        for name, port_number in servers:
+            self.m_connections[port_number] = name
+
+    def __enter__(self):
+        setup = asyncio.start_server(self.connect(), port=self.m_port)
+        self.m_server = asyncio.get_event_loop().run_until_complete(setup)
+        # connect servers
+
+    def run(self):
+        try:
+            await self.m_server.run_forever()
+        except KeyboardInterrupt:
+            self.log(self.m_name + " closing.")
+
+    async def connect(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
+        connect_id = writer.get_extra_info('socket')
+        try:
+            port_no = connect_id
+            server_name = self.m_connections[port_no]
+            await self.read_loop(port_no)
+            self.log("Server " + server_name + " closed.")
+            writer.close()
+        except KeyError:
+            await self.read_loop(connect_id)
+
+    async def read_loop(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
+        while not writer.is_closing():
+            msg = await reader.readline()
+            self.process_message(msg)
 
     def get_name(self):
         return self.m_name
-
-    def connect_server(self, servers):
-        for name, port_number in servers:
-            self.m_connections[name] = port_number
 
     def process_message(self, message):
         words = message.split()
@@ -59,12 +94,6 @@ class Server:
     def location_search(self, location, radius, result_count):
         # query google for nearby
         pass
-
-    def run(self):
-        while True:  # loop with async I/O
-            # (async) await read (message)
-            message = ""  # null declaration to run
-            self.process_message(message)
 
     def record(self, msg):
         self.m_history[msg.m_client_name] = msg
@@ -126,6 +155,10 @@ class Report:
 
 
 def main():
+    # make server by name
+    # connect other servers
+    # with 'name' as server
+    # loop -- await read or connection
     srv = Server("test", 69)
     srv.process_message("IAMAT "
                         "kiwi.cs.ucla.edu "
