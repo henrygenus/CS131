@@ -43,12 +43,13 @@ class Server:
         return msg
 
     def query_handler(self, message):
-        client_name, m_radius, m_result_count = message
+        client_name, radius, result_count = message
         msg = self.m_history[client_name]
         # ask google for location
         # send message and JSON back to client
         return msg
 
+    # logs a Report object to logfile and history
     def log(self, msg):
         self.m_history[msg.m_client_name] = msg
         with open(self.m_filename, 'w+') as logfile:
