@@ -4,9 +4,8 @@ The code comes from
 https://asyncio.readthedocs.io/en/latest/tcp_echo.html
 
 To run:
-1. start the echo_server.py first in a terminal
-2. start the echo_client.py in another terminal
-3. follow print-back instructions on client side until you quit
+1. start a server first in a terminal
+2. start the client.py in another terminal
 """
 
 import asyncio
