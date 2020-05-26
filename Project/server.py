@@ -17,15 +17,15 @@ class Server:
         self.port = port
         self.history = dict()
         self.connections = dict()
-        self.server_streams = list()
+        self.connected = list()
         self.server = None
         self.message_handler = {
-                "WHATSAT": (lambda m, w: self.query_handler(m, w)),
-                "IAMAT": (lambda m, w: self.assertion_handler(m, w)),
-                "AT": (lambda m, w: self.report_handler(m, w))
+                "WHATSAT": (lambda m: self.query_handler(m)),
+                "IAMAT": (lambda m: self.assertion_handler(m)),
+                "AT": (lambda m: self.report_handler(m))
         }
         for name, port_number in servers:
-            self.connections[port_number] = name
+            self.connections[port_number] = (False, name)
 
     def start(self):
         try:
@@ -46,47 +46,32 @@ class Server:
 
     async def run(self):
         self.server = await asyncio.start_server(self.connect, self.ip, self.port)
-        await self.connect_servers()
         print(f'serving on {self.server.sockets[0].getsockname()}')
         async with self.server:
             await self.server.serve_forever()
 
-    # TODO: log servers that connect to this one
     async def connect(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
         print("Connected")
-        try:
-            msg = await reader.read(1024)
-            message = msg.decode()
-            addr = writer.get_extra_info('peername')
-            print("{} received '{}' from {}".format(self.name, message, addr))
-            await self.handle_message(message, writer)
-        except NewConnection as e:
-            self.server_streams.append(e.writer)
-            self.log(f"Server '{e.name}' connected.")
-
-    # TODO: make it so connection happens more than once
-    async def connect_servers(self):
-        for port, name in self.connections.items():
-            try:
-                (reader, writer) = await asyncio.open_connection(port=port)
-                writer.write(f"AT CONNECT {self.name}".encode())
-                self.server_streams.append(writer)
-                self.log(f"Server '{name}' connected.")
-            except IOError:
-                print(f"Failed to connect to '{name}'.")
+        msg = await reader.read(1024)
+        message = msg.decode()
+        addr = writer.get_extra_info('peername')
+        print("{} received '{}' from {}".format(self.name, message, addr))
+        await self.handle_message(message, writer)
 
     async def handle_message(self, message, writer):
         try:
             self.log(f"{message} <-")
             words = message.split()
-            msg: Report = await self.message_handler[words[0]](words[1:], writer)
+            msg: Report = await self.message_handler[words[0]](words[1:])
             self.record(msg)
+            response = msg()
         except KeyError or IndexError:
             response = f"? {message}"
-            writer.write(response.encode())
             self.log(f"-> {response}")
+        finally:
+            writer.write(response.encode())
 
-    async def assertion_handler(self, msg_words, writer):
+    async def assertion_handler(self, msg_words):
         client_name, long_lat, send_time = msg_words
         msg = Report([self.name,
                       str(time() - float(send_time)),
@@ -94,36 +79,41 @@ class Server:
                       long_lat,
                       send_time])
         await self.flood(msg)
-        writer.write(msg().encode())
         return msg
 
     async def flood(self, msg):
-        print(self.server_streams)
-        for writer in self.server_streams:
+        for port, (was_open, name) in self.connections.items():
             try:
+                (reader, writer) = await asyncio.open_connection(port=port)
                 await msg.send(writer)
                 self.log(f"-> {msg()}")
+                writer.close()
+                assert was_open
+            except AssertionError:
+                self.connections[port] = (True, name)
+                self.log(f"Server '{name}' connected.")
             except IOError:
-                pass
+                self.connections[port] = (False, name)
+                try:
+                    assert not was_open
+                except AssertionError:
+                    self.log(f"Server '{name}' disconnected.")
 
-    async def report_handler(self, msg_words, writer):
+    async def report_handler(self, msg_words):
+        msg = Report(msg_words)
         try:
-            msg = Report(msg_words)
             assert msg == self.history[msg.get_client_name]
             await self.flood(msg)
-            return msg
         except AssertionError:
+            pass
+        finally:
             return msg
-        except ValueError:
-            if msg_words[0] == "CONNECT":
-                raise NewConnection(name=msg_words[1], writer=writer)
 
-    async def query_handler(self, msg_words, writer):
+    async def query_handler(self, msg_words):
         client_name, radius, result_count = msg_words
         msg = self.history[client_name]
         await self.location_search(msg.get_location, radius, result_count)
         # record/send message and JSON back to client
-        writer.write(msg().encode())
         return msg
 
     async def location_search(self, location, radius, result_count):
