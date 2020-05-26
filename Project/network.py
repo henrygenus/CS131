@@ -44,7 +44,7 @@ def main():
     parser.add_argument('scope', type=str,
                         help='required) server scope input')
     args = parser.parse_args()
-    print("Hello, welcome to server {}".format(args.server_name))
+    print(f"Hello, welcome to server {args.server_name}")
     make_server(args.server_name, args.scope)
 
 
