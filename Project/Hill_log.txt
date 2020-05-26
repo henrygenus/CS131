@@ -1,42 +1,10 @@
---Closing server 'Hill'.
 Booting server 'Hill'.
+IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1520023934.918963997 <-
+-> AT Hill 70502492.51118326 kiwi.cs.ucla.edu +34.068930-118.445127 1520023934.918963997
 Server 'Jaquez' connected.
-AT CONNECT Jaquez <-
-Server 'Jaquez' connected.
+-> AT Hill 70502492.51118326 kiwi.cs.ucla.edu +34.068930-118.445127 1520023934.918963997
+AT Jaquez 70502604.13811707 kiwi.cs.ucla.edu +34.068930-118.445127 1520023934.918963997 <-
+-> AT Jaquez 70502604.13811707 kiwi.cs.ucla.edu +34.068930-118.445127 1520023934.918963997
+AT Jaquez 70502917.21568418 kiwi.cs.ucla.edu +34.068930-118.445127 1520023934.918963997 <-
+-> AT Jaquez 70502917.21568418 kiwi.cs.ucla.edu +34.068930-118.445127 1520023934.918963997
 --Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
-AT CONNECT Jaquez <-
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
---Closing server 'Hill'.
-Booting server 'Hill'.
-Server 'Jaquez' connected.
