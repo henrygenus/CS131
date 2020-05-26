@@ -1,70 +1,92 @@
 import asyncio
-import sys
+import argparse
 from time import time
 # import aiohttp
 
-# port 12000, 12001, 12002, 12003, 12004
-# error checking not yet implemented
-#local ports:
-#      port_dict = {
-#         'Hill': 8000,
-#         'Jaquez': 8001,
-#         'Smith': 8002,
-#         'Campbell': 8003,
-#         'Singleton': 8004
-#     }
+# server_port_number = {
+#     'Hill': 12000,
+#     'Jaquez': 12001,
+#     'Smith': 12002,
+#     'Campbell': 12003,
+#     'Singleton': 12004
+# }
+server_port_number = {
+     'Hill': 8000,
+     'Jaquez': 8001,
+     'Smith': 8002,
+     'Campbell': 8003,
+     'Singleton': 8004
+}
+connections = {
+        "Hill": ["Jaquez", "Smith"],
+        "Singleton": ["Jaquez", "Smith", "Campbell"],
+        "Smith": ["Campbell", "Singleton"],
+        "Jaquez": ["Singleton", "Hill"],
+        "Campbell": ["Singleton", "Smith"]
+    }
 
 
 class Server:
-    def __init__(self, name, port, servers):
-        self.m_name = name
-        self.m_port = port
-        self.m_filename = str(name) + "_log.txt"
-        self.m_history = dict()
-        self.m_connections = dict()
-        self.m_server = None
+    def __init__(self, name, ip, port, servers=list()):
+        self.name = name
+        self.ip = ip
+        self.port = port
+        self.history = dict()
+        self.connections = dict()
+        self.server_streams = dict()
+        self.server = None
         for name, port_number in servers:
-            self.m_connections[port_number] = name
+            self.connections[port_number] = name
 
-    def __enter__(self):
-        setup = asyncio.start_server(self.connect(), port=self.m_port)
-        self.m_server = asyncio.get_event_loop().run_until_complete(setup)
-        # connect servers
-
-    def run(self):
+    def start(self):
         try:
-            await self.m_server.run_forever()
+            asyncio.run(self.run())
         except KeyboardInterrupt:
-            self.log(self.m_name + " closing.")
+            self.log("\nServer '" + self.name + "' closing.")
+            self.server.close()
+
+    async def run(self):
+        self.server = await asyncio.start_server(self.connect, self.ip, self.port)
+        print(f'serving on {self.server.sockets[0].getsockname()}')
+        async with self.server:
+            await self.server.serve_forever()
 
     async def connect(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-        connect_id = writer.get_extra_info('socket')
+        msg = await reader.read(1024)
+        message = msg.decode()
+        addr = writer.get_extra_info('peername')
+        print("{} received '{}' from {}".format(self.name, message, addr))
+        await self.handle_message(message, writer)
+        print("Awaiting messages.")
+
+    async def handle_message(self, message, writer):
         try:
-            port_no = connect_id
-            server_name = self.m_connections[port_no]
-            await self.read_loop(port_no)
-            self.log("Server " + server_name + " closed.")
-            writer.close()
+            self.log(message + " <-")
+            words = message.split()
+            message_handler = {
+                "WHATSAT": (lambda m: self.query_handler(m)),
+                "IAMAT": (lambda m: self.assertion_handler(m)),
+                "AT": (lambda m: self.report_handler(m))
+            }
+            msg: Report = message_handler[words[0]](words[1:])
+            self.record(msg)
+            response = msg()
         except KeyError:
-            await self.read_loop(connect_id)
+            response = "? " + message
+            self.log("-> " + response)
+        finally:
+            writer.write(response.encode())
+            await writer.drain()
 
-    async def read_loop(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-        while not writer.is_closing():
-            msg = await reader.readline()
-            self.process_message(msg)
-
-    def get_name(self):
-        return self.m_name
-
-    def process_message(self, message):
-        words = message.split()
-        message_handler = {
-            "WHATSAT": (lambda msg: self.query_handler(msg)),
-            "IAMAT": (lambda msg: self.assertion_handler(msg)),
-            "AT": (lambda msg: self.report_handler(msg))
-        }
-        response: Report = message_handler[words[0]](words[1:])
-        return self.log(response)
+    async def connect_servers(self):
+        for name in self.connections:
+            try:
+                port = server_port_number[name]
+                (reader, writer) = await asyncio.open_connection(port=port)
+                self.server_streams[name] = (reader, writer)
+                await asyncio.create_task(self.connect(reader, writer))
+            except IOError:
+                pass
 
     def report_handler(self, msg_words):
         msg = Report(msg_words)
@@ -73,20 +95,20 @@ class Server:
 
     def assertion_handler(self, message):
         client_name, long_lat, send_time = message
-        msg = Report([self.m_name,
+        msg = Report([self.name,
                       str(time() - float(send_time)),
                       client_name,
                       long_lat,
                       send_time])
-        if msg == self.m_history[msg.get_client_name]:
-            pass
-        else:
+        try:
+            assert msg == self.history[msg.get_client_name]
+        except KeyError or AssertionError:
             self.flood(msg)
         return msg
 
     def query_handler(self, message):
         client_name, radius, result_count = message
-        msg = self.m_history[client_name]
+        msg = self.history[client_name]
         self.location_search(msg.get_location, radius, result_count)
         # record/send message and JSON back to client
         return msg
@@ -96,28 +118,20 @@ class Server:
         pass
 
     def record(self, msg):
-        self.m_history[msg.m_client_name] = msg
-        self.log(msg())
+        self.history[msg.m_client_name] = msg
+        self.log("->" + msg())
 
     def log(self, msg):
-        with open(self.m_filename, 'w+') as logfile:
+        with open(self.name + "_log.txt", 'w+') as logfile:
             logfile.write(msg)
-        return msg
+        print(msg)
 
     def flood(self, msg):
-        for server in self.m_connections.values():
+        for reader, writer in self.server_streams.values():
             try:
-                msg.send(server)
+                msg.send(writer)
             except IOError:
-                self.log("Server " + server.get_name() + " disconnected")
                 pass
-            pass
-
-    def dump(self):
-        for message in self.m_history.values():
-            print(message())
-        for server in self.m_connections.keys():
-            print("Connected to:" + server)
 
 
 # FORMAT: SERVER_NAME DTIME CLIENT_NAME LONG_LAT SEND_TIME
@@ -143,34 +157,24 @@ class Report:
     def get_location(self):
         return self.m_long_lat
 
-    def send(self, recipient):
+    async def send(self, writer):
         try:
-            int(recipient)
-            # send self message to recipient port number
-            pass
-        except TypeError:
-            # async error
-            # send self message to recipient address
+            writer.write(self())
+            await writer.drain()
+        except IOError:
             pass
 
 
 def main():
-    # make server by name
-    # connect other servers
-    # with 'name' as server
-    # loop -- await read or connection
-    srv = Server("test", 69)
-    srv.process_message("IAMAT "
-                        "kiwi.cs.ucla.edu "
-                        "0 "
-                        "0")
-    srv.process_message("AT Hill "
-                        "+0.263873386 "
-                        "kiwi.cs.ucla.edu "
-                        "+34.068930-118.445127 "
-                        "1520023934.918963997")
-    srv.process_message("WHATSAT kiwi.cs.ucla.edu 10 5")
-    srv.dump()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('server_name', type=str,
+                        help='required server name input')
+    parser.add_argument('server_port', type=int,
+                        help='required server port input')
+    args = parser.parse_args()
+    print("Hello, welcome to server {}".format(args.server_name))
+    server = Server(args.server_name, '127.0.0.1', args.server_port)
+    server.start()
 
 
 if __name__ == "__main__":
