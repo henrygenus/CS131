@@ -18,27 +18,6 @@ STRUCTURE:
                 AT -- for reporting location to another server; this is what is stored
                         if recieve AT, forward to all connected servers except sender
 
-    Main:
-        Create the five relevant servers
-            Includes Establishing Connection
-            Running loops
-        asynchio.run(processing_loop())
-            processing_loop():
-                asynch_read
-                process input
-
 WHATSAT -- Google Nearby Search
         Format: https://maps.googleapis.com/maps/api/place/nearbysearch/json?parameters
                 where parameters = {key, location, radius}
-
-Flooding: (@ en.wikipedia.org/wiki/Flooding_%28computer_networking%29)
-There are several variants of flooding algorithms. Most work roughly as follows:
-    Each node acts as both a transmitter and a receiver.
-    Each node tries to forward every message to every one of its neighbors except the source node.
-This results in every message eventually being delivered to all reachable parts of the network.
-Precautions have to be taken to avoid wasted duplicate deliveries and infinite loops, and to allow
-messages to eventually expire from the system.
------ Selective flooding -----
-A variant of flooding called selective flooding partially addresses these issues by only sending
-packets to routers in the same direction. In selective flooding the routers don't send every
-incoming packet on every line but only on those lines which are going approximately in the right direction.
