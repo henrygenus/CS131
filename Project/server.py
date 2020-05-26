@@ -11,30 +11,40 @@ class Server:
         self.port = port
         self.history = dict()
         self.connections = dict()
-        self.server_streams = dict()
+        self.server_streams = list()
         self.server = None
         for name, port_number in servers:
             self.connections[port_number] = name
 
     def start(self):
         try:
+            self.log("Booting server '" + self.name + "'.")
             asyncio.run(self.run())
         except KeyboardInterrupt:
-            self.log("\nServer '" + self.name + "' closing.")
+            self.log("--Server '" + self.name + "' closing.")
             self.server.close()
 
     async def run(self):
         self.server = await asyncio.start_server(self.connect, self.ip, self.port)
+        await self.connect_servers()
         print(f'serving on {self.server.sockets[0].getsockname()}')
         async with self.server:
             await self.server.serve_forever()
 
+    # TODO: log servers that connect to this one
     async def connect(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-        msg = await reader.read(1024)
-        message = msg.decode()
-        addr = writer.get_extra_info('peername')
-        print("{} received '{}' from {}".format(self.name, message, addr))
-        await self.handle_message(message, writer)
+        ip = writer.get_extra_info('peername')[0]
+        print(ip)
+        print(self.connections)
+        if ip == self.ip:
+            print(ip + "added")
+            self.server_streams.append((reader, writer))
+        else:
+            msg = await reader.read(1024)
+            message = msg.decode()
+            addr = writer.get_extra_info('peername')
+            print("{} received '{}' from {}".format(self.name, message, addr))
+            await self.handle_message(message, writer)
         print("Awaiting messages.")
 
     async def handle_message(self, message, writer):
@@ -46,10 +56,10 @@ class Server:
                 "IAMAT": (lambda m: self.assertion_handler(m)),
                 "AT": (lambda m: self.report_handler(m))
             }
-            msg: Report = message_handler[words[0]](words[1:])
+            msg: Report = await message_handler[words[0]](words[1:])
             self.record(msg)
             response = msg()
-        except KeyError:
+        except KeyError or IndexError:
             response = "? " + message
             self.log("-> " + response)
         finally:
@@ -57,20 +67,20 @@ class Server:
             await writer.drain()
 
     async def connect_servers(self):
-        for name, port in self.connections:
+        for port, name in self.connections.items():
             try:
                 (reader, writer) = await asyncio.open_connection(port=port)
-                self.server_streams[name] = (reader, writer)
-                await asyncio.create_task(self.connect(reader, writer))
+                self.server_streams.append((reader, writer))
+                print("Connected to '" + name + "'.")
             except IOError:
-                pass
+                print("Failed to connect to '" + name + "'.")
 
-    def report_handler(self, msg_words):
+    async def report_handler(self, msg_words):
         msg = Report(msg_words)
-        self.flood(msg)
+        await self.flood(msg)
         return msg
 
-    def assertion_handler(self, message):
+    async def assertion_handler(self, message):
         client_name, long_lat, send_time = message
         msg = Report([self.name,
                       str(time() - float(send_time)),
@@ -80,10 +90,10 @@ class Server:
         try:
             assert msg == self.history[msg.get_client_name]
         except KeyError or AssertionError:
-            self.flood(msg)
+            await self.flood(msg)
         return msg
 
-    def query_handler(self, message):
+    async def query_handler(self, message):
         client_name, radius, result_count = message
         msg = self.history[client_name]
         self.location_search(msg.get_location, radius, result_count)
@@ -96,17 +106,17 @@ class Server:
 
     def record(self, msg):
         self.history[msg.m_client_name] = msg
-        self.log("->" + msg())
+        self.log("-> " + msg())
 
     def log(self, msg):
-        with open(self.name + "_log.txt", 'w+') as logfile:
-            logfile.write(msg)
+        with open(self.name + "_log.txt", 'a+') as logfile:
+            logfile.write(msg + "\n")
         print(msg)
 
-    def flood(self, msg):
-        for reader, writer in self.server_streams.values():
+    async def flood(self, msg):
+        for reader, writer in self.server_streams:
             try:
-                msg.send(writer)
+                await msg.send(writer)
             except IOError:
                 pass
 
@@ -136,7 +146,7 @@ class Report:
 
     async def send(self, writer):
         try:
-            writer.write(self())
+            writer.write(self().encode())
             await writer.drain()
         except IOError:
             pass

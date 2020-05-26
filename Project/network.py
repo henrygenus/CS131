@@ -1,9 +1,5 @@
-import threading
-import asyncio
-from os import system
 import server
-import echo_client
-import sys
+import argparse
 
 remote_server_port_number = {
      'Hill': 12000,
@@ -28,10 +24,12 @@ connections = {
 }
 
 
-async def make_server(name):
-    if sys.argv[1] == "local":
+def make_server(name, scope):
+    if scope == "local":
+        print("Using local ports")
         ports = local_server_port_number
     else:
+        print("Using remote ports")
         ports = remote_server_port_number
     connected = list()
     for server_name in connections[name]:
@@ -40,16 +38,15 @@ async def make_server(name):
 
 
 def main():
-    asyncio.create_task(make_server("Hill"))
-    asyncio.create_task(make_server("Singleton"))
-    asyncio.create_task(make_server("Jaquez"))
-    asyncio.create_task(make_server("Smith"))
-    asyncio.create_task(make_server("Campbell"))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('server_name', type=str,
+                        help='required server name input')
+    parser.add_argument('scope', type=str,
+                        help='required) server scope input')
+    args = parser.parse_args()
+    print("Hello, welcome to server {}".format(args.server_name))
+    make_server(args.server_name, args.scope)
 
-    client = echo_client.Client()
-    client.run_until_quit()
 
-
-
-if "__name__" == "__main__":
+if __name__ == "__main__":
     main()

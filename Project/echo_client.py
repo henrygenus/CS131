@@ -1,7 +1,5 @@
+import argparse
 """
-Note that this piece of code is (of course) only a hint
-you are not required to use it
-neither do you have to use any of the methods mentioned here
 The code comes from
 https://asyncio.readthedocs.io/en/latest/tcp_echo.html
 
@@ -15,7 +13,7 @@ import asyncio
 
 
 class Client:
-    def __init__(self, ip='127.0.0.1', port=8000, name='client', message_max_length=1e6):
+    def __init__(self, port=8000, ip='127.0.0.1', name='client', message_max_length=1e6):
         """
         127.0.0.1 is the localhost
         port could be any port
@@ -54,5 +52,9 @@ class Client:
 
 
 if __name__ == '__main__':
-    client = Client()  # using the default settings
+    parser = argparse.ArgumentParser()
+    parser.add_argument('server_port', type=int,
+                        help='required server port input')
+    args = parser.parse_args()
+    client = Client(args.server_port)
     client.run_until_quit()
