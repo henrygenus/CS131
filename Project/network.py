@@ -48,5 +48,6 @@ def main():
     make_server(args.server_name, args.scope)
 
 
+# TODO make this the standard in server.py
 if __name__ == "__main__":
     main()
