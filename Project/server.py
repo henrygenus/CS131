@@ -1,33 +1,11 @@
 import asyncio
 import argparse
 from time import time
-# import aiohttp
-
-# server_port_number = {
-#     'Hill': 12000,
-#     'Jaquez': 12001,
-#     'Smith': 12002,
-#     'Campbell': 12003,
-#     'Singleton': 12004
-# }
-server_port_number = {
-     'Hill': 8000,
-     'Jaquez': 8001,
-     'Smith': 8002,
-     'Campbell': 8003,
-     'Singleton': 8004
-}
-connections = {
-        "Hill": ["Jaquez", "Smith"],
-        "Singleton": ["Jaquez", "Smith", "Campbell"],
-        "Smith": ["Campbell", "Singleton"],
-        "Jaquez": ["Singleton", "Hill"],
-        "Campbell": ["Singleton", "Smith"]
-    }
+import aiohttp
 
 
 class Server:
-    def __init__(self, name, ip, port, servers=list()):
+    def __init__(self, name, port, ip='127.0.0.1', servers=list()):
         self.name = name
         self.ip = ip
         self.port = port
@@ -79,9 +57,8 @@ class Server:
             await writer.drain()
 
     async def connect_servers(self):
-        for name in self.connections:
+        for name, port in self.connections:
             try:
-                port = server_port_number[name]
                 (reader, writer) = await asyncio.open_connection(port=port)
                 self.server_streams[name] = (reader, writer)
                 await asyncio.create_task(self.connect(reader, writer))
@@ -173,7 +150,7 @@ def main():
                         help='required server port input')
     args = parser.parse_args()
     print("Hello, welcome to server {}".format(args.server_name))
-    server = Server(args.server_name, '127.0.0.1', args.server_port)
+    server = Server(args.server_name, args.server_port)
     server.start()
 
 
