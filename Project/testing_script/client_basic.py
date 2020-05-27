@@ -204,9 +204,11 @@ class SuperClient:
                     "radius": 10,
                     "max_item": 5
                 }
-                # print("dropped {}, {}".format(dropped_i, dropped_j))
-                # print("Test case: {} {} {}{}".format(
-                #    test_case["server"], test_case["client"], test_case["radius"], test_case["max_item"]))
+                """
+                print("dropped {}, {}".format(dropped_i, dropped_j))
+                print("Test case: {} {} {}{}".format(
+                   test_case["server"], test_case["client"], test_case["radius"], test_case["max_item"]))
+                """
                 data = self.safe_run_iamat(
                     test_case["server"], test_case["client"], test_case["latitude"], test_case["longitude"])
                 results = self.safe_run_whatsat(
