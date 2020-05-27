@@ -8,15 +8,15 @@ Project Outline:
 STRUCTURE:
     Server Class
         dictionary of messages for clients
-        list for communicable servers
-        file for I/O log
+        list for communicable servers with connection status
+        various server details
         Message Class
                 WHATSAT -- from client, respond with Google Places
-                        if recieve WHATSAT, send request to Google Places, then give JSON
+                        if receive WHATSAT, send request to Google Places, then give JSON
                 IMAT -- from client, respond with AT message
-                        if recieve IMAT, send AT to connected servers, client
+                        if receive IMAT, send AT to connected servers, client
                 AT -- for reporting location to another server; this is what is stored
-                        if recieve AT, forward to all connected servers except sender
+                        if receive AT, forward to all connected servers except sender
 
 WHATSAT -- Google Nearby Search
         Format: https://maps.googleapis.com/maps/api/place/nearbysearch/json?parameters

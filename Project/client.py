@@ -33,10 +33,6 @@ class Client:
         data = await reader.read(self.message_max_length)
         print(f'{self.name} received: {data.decode()!r}')
 
-        print('close the socket')
-        # The following lines closes the stream properly
-        # If there is any warning, it's due to a bug o Python 3.8: https://bugs.python.org/issue38529
-        # Please ignore it
         writer.close()
 
     def run_until_quit(self):

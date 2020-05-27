@@ -1,7 +1,7 @@
 import asyncio
 import argparse
 from time import time
-import aiohttp
+# import aiohttp
 
 
 class NewConnection(RuntimeError):
@@ -29,46 +29,40 @@ class Server:
 
     def start(self):
         try:
-            self.log(f"Booting server '{self.name}'.")
             asyncio.run(self.run())
         except KeyboardInterrupt:
-            self.log(f"--Closing server '{self.name}'.")
+            self.log(f"-- Closing server '{self.name}'.")
             self.server.close()
 
-    def record(self, msg):
-        self.history[msg.m_client_name] = msg
-        self.log(f"-> {msg()}")
-
-    def log(self, msg):
-        with open(self.name + "_log.txt", 'a+') as logfile:
+    @staticmethod
+    def log(msg):
+        with open("log.txt", 'a+') as logfile:
             logfile.write(msg + "\n")
         print(msg)
 
     async def run(self):
         self.server = await asyncio.start_server(self.connect, self.ip, self.port)
-        print(f'serving on {self.server.sockets[0].getsockname()}')
+        self.log('++ {} serving on {}'.format(self.name, self.server.sockets[0].getsockname()))
         async with self.server:
             await self.server.serve_forever()
 
     async def connect(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-        print("Connected")
         msg = await reader.read(1024)
         message = msg.decode()
-        addr = writer.get_extra_info('peername')
-        print("{} received '{}' from {}".format(self.name, message, addr))
+        self.log("<< {} received '{}'".format(self.name, message))
         await self.handle_message(message, writer)
 
     async def handle_message(self, message, writer):
+        response = f"? {message}"
         try:
-            self.log(f"{message} <-")
             words = message.split()
             msg: Report = await self.message_handler[words[0]](words[1:])
-            self.record(msg)
+            self.history[msg.m_client_name] = msg
             response = msg()
         except KeyError or IndexError:
-            response = f"? {message}"
-            self.log(f"-> {response}")
+            pass
         finally:
+            self.log(">> {} responded '{}'".format(self.name, response))
             writer.write(response.encode())
 
     async def assertion_handler(self, msg_words):
@@ -81,33 +75,34 @@ class Server:
         await self.flood(msg)
         return msg
 
+    # TODO: make flood algorithm work
+    async def report_handler(self, msg_words):
+        msg = Report(msg_words)
+        try:
+            assert msg() == self.history[msg.get_client_name()]()
+        except KeyError or AssertionError:
+            self.history[msg.get_client_name()] = msg
+            await self.flood(msg)
+        finally:
+            return msg
+
     async def flood(self, msg):
         for port, (was_open, name) in self.connections.items():
             try:
                 (reader, writer) = await asyncio.open_connection(port=port)
                 await msg.send(writer)
-                self.log(f"-> {msg()}")
                 writer.close()
                 assert was_open
             except AssertionError:
                 self.connections[port] = (True, name)
-                self.log(f"Server '{name}' connected.")
+                self.log("|+ {} connected to {}".format(self.name, name))
+                self.log(">> {} forwarded '{}'".format(self.name, msg()))
             except IOError:
                 self.connections[port] = (False, name)
                 try:
                     assert not was_open
                 except AssertionError:
-                    self.log(f"Server '{name}' disconnected.")
-
-    async def report_handler(self, msg_words):
-        msg = Report(msg_words)
-        try:
-            assert msg == self.history[msg.get_client_name]
-            await self.flood(msg)
-        except AssertionError:
-            pass
-        finally:
-            return msg
+                    self.log("|- {} disconnected from {}".format(self.name, name))
 
     async def query_handler(self, msg_words):
         client_name, radius, result_count = msg_words
