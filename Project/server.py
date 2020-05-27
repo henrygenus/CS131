@@ -1,10 +1,10 @@
 import asyncio
+import aiohttp
 import argparse
-import re
 import constants
+from re import sub
 from json import dumps
 from time import time
-import aiohttp
 
 
 class Server:
@@ -84,6 +84,13 @@ class Server:
             return msg()
 
     # TODO: don't reply to sender since they have a writer open
+    """
+    ERRORS ON:
+    dropped Jaquez, Singleton
+    dropped Hill, Smith
+    dropped Hill, Campbell
+    ie when there is a looping recursion
+    """
     async def flood(self, msg):
         for port, (was_open, name) in self.connections.items():
             try:
@@ -122,7 +129,7 @@ class Server:
 
     @staticmethod
     async def make_request(loc, rad, key):
-        lat_long = re.sub('([+-][0-9]+.[0-9]+)([+-][0-9]+.[0-9]+)', r'\1,\2', loc)
+        lat_long = sub('([+-][0-9]+.[0-9]+)([+-][0-9]+.[0-9]+)', r'\1,\2', loc)
         async with aiohttp.ClientSession() as session:
             async with session.get("{}?key={}&location={}&radius={}".format(
                     constants.URL, key, lat_long, int(rad)*1000)) as response:
@@ -162,8 +169,8 @@ class Report:
             pass
 
 
-def make_server(name, scope='local'):
-    if scope == "local":
+def make_server(name):
+    if constants.SCOPE == "LOCAL":
         print("Using local ports")
         ports = constants.local_server_port_number
     else:
