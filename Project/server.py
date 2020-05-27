@@ -1,13 +1,10 @@
 import asyncio
 import argparse
+import re
+import constants
+from json import dumps
 from time import time
-# import aiohttp
-
-
-class NewConnection(RuntimeError):
-    def __init__(self, name, writer):
-        self.name = name
-        self.writer = writer
+import aiohttp
 
 
 class Server:
@@ -47,23 +44,23 @@ class Server:
             await self.server.serve_forever()
 
     async def connect(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-        msg = await reader.read(1024)
+        msg = await reader.read(constants.MAX_LEN)
         message = msg.decode()
         self.log("<< {} received '{}'".format(self.name, message))
         await self.handle_message(message, writer)
 
     async def handle_message(self, message, writer):
-        response = f"? {message}"
+        response = ""
         try:
             words = message.split()
-            msg: Report = await self.message_handler[words[0]](words[1:])
-            self.history[msg.m_client_name] = msg
-            response = msg()
+            response = await self.message_handler[words[0]](words[1:])
         except KeyError or IndexError:
-            pass
+            response = f"? {message}"
         finally:
             self.log(">> {} responded '{}'".format(self.name, response))
             writer.write(response.encode())
+            await writer.drain()
+            writer.close()
 
     async def assertion_handler(self, msg_words):
         client_name, long_lat, send_time = msg_words
@@ -72,10 +69,10 @@ class Server:
                       client_name,
                       long_lat,
                       send_time])
+        self.history[msg.m_client_name] = msg
         await self.flood(msg)
-        return msg
+        return msg()
 
-    # TODO: make flood algorithm work
     async def report_handler(self, msg_words):
         msg = Report(msg_words)
         try:
@@ -84,19 +81,25 @@ class Server:
             self.history[msg.get_client_name()] = msg
             await self.flood(msg)
         finally:
-            return msg
+            return msg()
 
+    # TODO: don't reply to sender since they have a writer open
     async def flood(self, msg):
         for port, (was_open, name) in self.connections.items():
             try:
+                print(f"{self.name} trying to flood {name}")
                 (reader, writer) = await asyncio.open_connection(port=port)
                 await msg.send(writer)
                 writer.close()
-                assert was_open
-            except AssertionError:
+
                 self.connections[port] = (True, name)
-                self.log("|+ {} connected to {}".format(self.name, name))
-                self.log(">> {} forwarded '{}'".format(self.name, msg()))
+                try:
+                    assert was_open
+                except AssertionError:
+                    self.log("|+ {} connected to {}".format(self.name, name))
+                finally:
+                    self.log(">> {} forwarded '{}'".format(self.name, msg()))
+
             except IOError:
                 self.connections[port] = (False, name)
                 try:
@@ -107,13 +110,24 @@ class Server:
     async def query_handler(self, msg_words):
         client_name, radius, result_count = msg_words
         msg = self.history[client_name]
-        await self.location_search(msg.get_location, radius, result_count)
-        # record/send message and JSON back to client
-        return msg
+        jsons = await self.location_search(msg.get_location(), radius, result_count)
+        return '{}{}{}'.format(msg(), "\n", jsons)
 
-    async def location_search(self, location, radius, result_count):
-        # query google for nearby
-        pass
+    @staticmethod
+    async def location_search(location, radius, result_count):
+        results = await Server.make_request(location, radius, constants.APIKey)
+        del results['results'][int(result_count):]
+        jsons = dumps(results, indent=4)
+        return jsons
+
+    @staticmethod
+    async def make_request(loc, rad, key):
+        lat_long = re.sub('([+-][0-9]+.[0-9]+)([+-][0-9]+.[0-9]+)', r'\1,\2', loc)
+        async with aiohttp.ClientSession() as session:
+            async with session.get("{}?key={}&location={}&radius={}".format(
+                    constants.URL, key, lat_long, int(rad)*1000)) as response:
+                print(response.url)
+                return await response.json()
 
 
 # FORMAT: SERVER_NAME DTIME CLIENT_NAME LONG_LAT SEND_TIME
@@ -143,20 +157,31 @@ class Report:
         try:
             writer.write(self().encode())
             await writer.drain()
+            writer.close()
         except IOError:
             pass
+
+
+def make_server(name, scope='local'):
+    if scope == "local":
+        print("Using local ports")
+        ports = constants.local_server_port_number
+    else:
+        print("Using remote ports")
+        ports = constants.remote_server_port_number
+    connected = list()
+    for server_name in constants.connections[name]:
+        connected.append((server_name, ports[server_name]))
+    Server(name, ports[name], servers=connected).start()
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('server_name', type=str,
                         help='required server name input')
-    parser.add_argument('server_port', type=int,
-                        help='required server port input')
     args = parser.parse_args()
     print(f"Hello, welcome to server {args.server_name}")
-    server = Server(args.server_name, args.server_port)
-    server.start()
+    make_server(args.server_name)
 
 
 if __name__ == "__main__":
