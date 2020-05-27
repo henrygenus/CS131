@@ -45,7 +45,8 @@ class Server:
     def _log(msg):
         with open("log.txt", 'a+') as logfile:
             logfile.write(msg + "\n")
-        print(msg)
+        if constants.DEBUG:
+            print(msg)
 
     async def connect(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
         await self.handle_message(await self.receive_message(reader), writer)
@@ -124,7 +125,6 @@ class Server:
         async with aiohttp.ClientSession() as session:
             async with session.get("{}?key={}&location={}&radius={}".format(
                     constants.URL, key, lat_long, int(rad)*1000)) as response:
-                print(response.url)
                 return await response.json()
 
 
