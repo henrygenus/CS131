@@ -1,10 +1,10 @@
+import os
+import sys
 import asyncio
 import time
 import json
 from messages import IAMAT, WHATSAT
 from evaluate import evaluate_json, evaluate_info, evaluate_flooding, compare_lists, report_correctness
-import os
-import sys
 
 
 '''
