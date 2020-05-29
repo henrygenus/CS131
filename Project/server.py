@@ -92,18 +92,17 @@ class Server:
         finally:
             await self._respond(writer, msg)
 
+    # for port, name in self.connections.items():
     async def _flood(self, msg):
-        for port, name in self.connections.items():
-            try:
-                (reader, writer) = await asyncio.open_connection(port=port)
-                writer.write(str(msg).encode())
-                await writer.drain()
-                writer.close()
-                await writer.wait_closed()
-                self._log("|+ {} connected to {}".format(self.name, name))
-                self._log(">> {} forwarded {}'".format(self.name, str(msg)))
-            except IOError:
-                self._log("|- {} failed to connect to {}".format(self.name, name))
+        await asyncio.gather(*map(lambda i: self._forward(msg, *i), self.connections.items()))
+
+    async def _forward(self, msg, port, name):
+        try:
+            await msg.send(port)
+            self._log("|+ {} connected to {}".format(self.name, name))
+            self._log(">> {} forwarded {}'".format(self.name, str(msg)))
+        except IOError:
+            self._log("|- {} failed to connect to {}".format(self.name, name))
 
     async def query_handler(self, msg_words, writer):
         client_name, radius, result_count = msg_words
@@ -144,6 +143,13 @@ class Report:
                self.client_name,
                self.lat_long,
                self.send_time)
+
+    async def send(self, port):
+        (reader, writer) = await asyncio.open_connection(port=port)
+        writer.write(str(self).encode())
+        await writer.drain()
+        writer.close()
+        await writer.wait_closed()
 
 
 def make_server(name):
