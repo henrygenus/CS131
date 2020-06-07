@@ -1,0 +1,109 @@
+\documentclass[9pt]{extarticle}
+\usepackage[T1]{fontenc}
+\usepackage[textheight=10in]{geometry}
+\usepackage[english]{babel}
+\usepackage{enumitem}
+\usepackage{amsthm} 
+\usepackage{amssymb}
+\usepackage{amsmath} 
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\graphicspath{ {Images/} }
+\usepackage[edges]{forest}
+\usepackage{tikz-qtree}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,
+	showstringspaces=false,
+	commentstyle=\color{red},
+	keywordstyle=\color{blue}
+}
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc, shapes.geometric, shapes.multipart, 
+	shapes, arrows.meta, arrows, 
+	decorations.markings, external, trees}
+\tikzset{
+	treenode/.style = 	{shape=rectangle, rounded corners,
+					draw, align=center,
+					top color=white, bottom color=blue!30},
+	no/.style = 	{treenode, bottom color=red!30},
+	yes/.style = 	{treenode, bottom color=green!30},
+	env/.style = 	{treenode, font=\ttfamily\normalsize},
+}
+\usepackage{blindtext}
+\usepackage{subfiles}
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+
+\title{Lecture Notes}
+\author{Henry Genus}
+\date{Spring 2020}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\newpage
+\section{Choice of Notation}
+\subfile{lectures/Lecture_1/Choice_of_Notation}
+
+\newpage
+\section{Syntax}
+\subfile{lectures/Lecture_2/Syntax}
+
+\newpage
+\section{Grammar Notation}
+\subfile{lectures/Lecture_3/Grammar_Notation}
+
+\newpage
+\section{Ambiguity}
+\subfile{lectures/Lecture_4/Ambiguity}
+
+\newpage
+\section{Software Construction for Programming Languages}
+\subfile{lectures/Lecture_5/Software_Construction}
+
+\newpage
+\section{Identifiers}
+\subfile{lectures/Lecture_6/Identifiers}
+
+\newpage
+\section{Polymorphism}
+\subfile{lectures/Lecture_7/Polymorphism}
+
+\newpage
+\section{Scope and Error Handling}
+\subfile{lectures/Lecture_8/Scope_and_Error_Handling}
+
+\newpage
+\section{Memory Management}
+\subfile{lectures/Lecture_9/Memory_Management}
+
+\newpage
+\section{Object-Oriented Programming}
+\subfile{lectures/Lecture_10/OOP}
+
+\appendix
+ 
+\newpage
+\section{OCaml}
+\subfile{lectures/Languages/OCaml}
+
+\newpage
+\section{Java}
+\subfile{lectures/Languages/Java}
+
+\newpage
+\section{Prolog}
+\subfile{lectures/Languages/Prolog}
+
+\newpage
+\section{Scheme}
+\subfile{lectures/Languages/Scheme}
+
+\end{document}

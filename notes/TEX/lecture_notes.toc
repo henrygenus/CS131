@@ -1,0 +1,15 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}Choice of Notation}{2}%
+\contentsline {section}{\numberline {2}Syntax}{4}%
+\contentsline {section}{\numberline {3}Grammar Notation}{8}%
+\contentsline {section}{\numberline {4}Ambiguity}{10}%
+\contentsline {section}{\numberline {5}Software Construction for Programming Languages}{13}%
+\contentsline {section}{\numberline {6}Identifiers}{16}%
+\contentsline {section}{\numberline {7}Polymorphism}{19}%
+\contentsline {section}{\numberline {8}Scope and Error Handling}{22}%
+\contentsline {section}{\numberline {9}Memory Management}{25}%
+\contentsline {section}{\numberline {10}Object-Oriented Programming}{32}%
+\contentsline {section}{\numberline {A}OCaml}{37}%
+\contentsline {section}{\numberline {B}Java}{41}%
+\contentsline {section}{\numberline {C}Prolog}{50}%
+\contentsline {section}{\numberline {D}Scheme}{58}%

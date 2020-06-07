@@ -1,0 +1,594 @@
+\documentclass[../../lecture_notes.tex]{subfiles}
+
+\begin{document}
+
+\noindent In Java, all types are a subset of the general Object.\\
+Thus, we may write the following code:
+\begin{lstlisting} [language=Java]
+	List<String> ls;
+	List<Object> lo = ls;
+	lo.add(new Thread());
+	String s = ls.get(); 
+	// BOOM ~ type error; we assigned a thread to a string
+\end{lstlisting}
+
+\noindent The Java compiler can catch this, but when should it send the message?\\
+\indent The error is at line (2); implicit type conversion, which subverts the type mechanism.\\
+Therefore, Java doesn’t allow this, since List<String> !<= List<Object>.\\
+\\
+ This is counterintuitive; it feels like List<String> should be a subclass of List<Object>.\\
+ The problem is that lists are mutable; => our intuitions on subtypes don’t extend to subclasses.\\
+
+This introduces another issue: what if we want to print an Object List?
+\begin{lstlisting} [language=Java]
+	void printList(List<Object> lo)
+	{
+	  for (Object o: lo)
+	    System.out.println(o);
+	}
+	printList(ls); // ERROR ~ List<String> is missing this method
+\end{lstlisting} \medskip
+
+\noindent We could write a polymorphic function, but this would require us to write duplicate code.\\
+Thus we use a \textbf{\underline{wildcard}}.
+\begin{lstlisting} [language=Java]
+	void printList(List<?> l)
+	{
+	  for (Object o: lo)
+	    System.out.println(o);
+	}
+	printList(lo); // OK
+	printList(ls); // OK
+\end{lstlisting} \medskip
+
+\noindent Now suppose the method to be called is restricted in type:
+\begin{lstlisting} [language=Java]
+	void displayShapes(List<?> l)
+	{
+	  for (Shape s: l)
+	    displayShape(s);
+	}
+	displayShapes(List<String>);
+	// allowed by ? but String has no displayShape()
+\end{lstlisting} \medskip
+
+\noindent Thus we must use a \textbf{\underline{restricted wildcard}}.
+\begin{lstlisting} [language=Java]
+	void displayShapes(List<? extends Shape> l)
+	{
+	  for (Shape s: l)
+	    displayShape(s);
+	}
+	/* ... */;
+	l.add(new Shape()); 
+	// may be disallowed since ? doesn't necessarily = Shape
+\end{lstlisting} \medskip
+
+\noindent Now suppose we want a function with two parameters
+\begin{lstlisting} [language=Java]
+	void convert(Object[] ao, List<Object> lo)
+	{
+	  for (Object o: ao)
+	    lo.add(o);
+	} // adds all of ao to lo
+	convert(String[], List<String>); 
+	// ERROR ~ List<Object> != List<String>
+\end{lstlisting} \medskip
+
+\noindent Again, we could just duplicate code, but that is inefficient.\\
+We also cannot just use a wildcard
+\begin{lstlisting} [language=Java]
+	void convert(Object[] ao, List<?> lo)
+	{
+	  for (Object o: ao)
+	    lo.add(o);
+	} // ERROR ~ casting ? to Object
+\end{lstlisting} \medskip
+
+\noindent We instead use a type parameter
+\begin{lstlisting} [language=Java]
+	<T> void convert(t[] ao, List<T> l)
+	{
+	  for (T o: ao)
+	    l.add(o);
+	}
+	String[] as = /* ... */;
+	List<Object> lo - /* ... */;
+	convert(as, lo);
+	// ERROR ~ List<Object> is not a supertype of List<string>
+\end{lstlisting} \medskip
+
+\noindent We can enforce this type rule with another bounded wildcard
+\begin{lstlisting} [language=Java]
+	<T> void convert(T[] a, List<? super T> l)
+	{
+	  for (T o: ao)
+	    l.add(o);
+	}
+\end{lstlisting} \medskip
+\noindent This complicated type algebra came naturally to meet demand;
+
+How is it implemented?\\
+The Java language does not specify an implementation, but a common approach is:
+\begin{itemize} [itemsep=0mm]
+	\item Every Object is a piece of storage with an address.
+	\item The storage begins with a type ‘tag’.
+	\item This ‘tag’ points to a runtime representation of the type.
+\end{itemize}
+This, however, does not capture the notion of generic types;\\
+	\indent We don’t have a separate representation for each implementation of the generic.\\
+	\indent Instead we point ‘tag’ to List<?> and trust the compiler to type check; 
+		this is called \textbf{\underline{erasure}}.\\
+This simplifies the system and lets us implement Java on simpler JVM’s without generics.\\
+This also lets us have only one copy of function code and static variables.\\
+\\
+This is not perfect, however; consider the following usage
+\begin{lstlisting} [language=Java]
+	List<Shape> ls = /* ... */;
+	List<Rectangle> lr = (List<Rectangle>) ls;
+	// the standard compiler cannot do this check with the above information
+\end{lstlisting} \medskip
+
+\noindent As a result, we do not cast to generic types;\\
+	\indent instead we utilize Duck Typing
+
+\subsubsection*{Duck Typing}
+“If it waddles like a duck and quacks like a duck, it is a duck."
+Objects don’t have types, only methods.\\
+Instead of worrying about what an object ‘is’, we worry about what it ‘does’.\\
+
+\noindent For example, instead of this standard approach:
+\begin{lstlisting} [language=Java]
+	if (isaDuck(o))
+	{
+	  print "is a duck; it will waddle";
+	  o.waddle(); 
+	  o.quack();
+	}
+\end{lstlisting}
+We simply attempt the behavior with a contingency (Pseudocode):
+\begin{lstlisting} [language=Java]
+	try {
+	  o.waddle();
+	  o.quick();
+	} except {
+	  //deal with non-ducks
+	}
+\end{lstlisting}
+\noindent This approach is common in languages like Python, Ruby, Smalltalk, etc..\\
+\\
+Is it possible to implement duck typing at compile time?\\
+\indent Yes! it was even one of the major motivations for Java:
+
+\subsubsection*{History of Java}
+In 1994, Sun Microsystems was working on Solaris
+\begin{itemize} [itemsep=0mm]
+	\item kernel in machine code/apps in C/C++
+	\item ran on SPARC workstations and multiprocessor servers
+\end{itemize}
+\noindent Sun knew C worked well on their complicated machinery, but what about IOT?
+They built a lab to address the following issues:
+\begin{enumerate} [itemsep=0mm]
+	\item C/C++ crash easily, which is unacceptable.
+	\item SPARC is expensive, so code needs to be made for all machines.
+	\item Networking is VERY slow, so C/C++ updates would be long.
+	\item C++ is too complicated, you can’t know all of the rules.
+\end{enumerate}
+ They considered two approaches:
+ \begin{enumerate} [itemsep=0mm]
+ 	\item Use C++, but remove the confusing stuff = C+-
+ 	\item Steal from XEROX PARC
+		\begin{itemize} [itemsep=0mm]
+			\item invented the mouse, internet, IDE, Smalltalk (OO dynamic typing)
+			\item build workstations for text processing (but charged too much)
+		\end{itemize}
+\end{enumerate}
+\noindent Smalltalk solved some problems of C, but introduced some new ones:
+\indent The good:
+\begin{itemize} [itemsep=0mm]
+	\item interpreted, so no crashing
+	\item garbage collection rather than new/del, so more reliable
+	\item operated via byte code, so machine independent
+	\item Object-Oriented
+\end{itemize}
+The bad:
+\begin{itemize} [itemsep=0mm]
+	\item weird syntax
+	\item single-threaded
+	\item terrible marketing
+\end{itemize}
+\noindent Solaris ultimately blended the two and called the result “Oak”
+The marketing department renamed it “Java”
+They decided to market it by writing a browser
+The main browser at the time was Mosaic bu UIUC
+\begin{itemize} [itemsep=0mm]
+	\item crashed a lot (C++)
+	\item required rewriting \& recompiling to extend
+	\item would ultimately diverge:
+	\item netscape $\rightarrow$ mozilla $\rightarrow$ firefox
+	\item internet explorer $\rightarrow$ microsoft edge
+\end{itemize}
+\noindent So Sun decided to create an extensible browser;
+\begin{itemize} [itemsep=0mm]
+	\item it would accept Java bytecode and run it in a sandbox
+	\item it was popular for demos but isn’t used much anymore
+	\item it convinced Eggert that Java was great for server-side applications
+ \end{itemize}
+
+\subsubsection*{Java Functionality}
+\begin{itemize} [itemsep=0mm]
+	\item compile-time checking — to avoid crashing like Smalltalk
+	\item variables are always initialized — to avoid inconsistency like SmallTalk
+	\item left-to-right order of evaluation — avoid crashing (*p++ / *p++ is undefined in C)
+	\item well defined primitive types — consistency (a*b+c → fmul+fadd, not fmuladd)
+	\item wrapped pointers — to avoid inconsistencies in behavior (because ptr length)
+\end{itemize}
+Let’s consider how this last one works with the edge case of Arrays:
+\begin{itemize} [itemsep=0mm]
+	\item are a reference type
+	\item mandate subscript checking
+	\item are all held on the heap (and thus return/passable)
+	\item have fixed size when allocated
+	\item are typed
+\end{itemize}
+
+\noindent Much of the rest of Java is analogous to C++, the exception being inheritance
+
+\subsubsection*{Inheritance}
+\noindent Java has single inheritance, so the class hierarchy forms a tree.\\
+Duck typers may be worried about this rigidity\\
+	\indent eg. suppose you have a length() and a width() method;\\
+	\indent \indent A hierarchy cannot represent all versions of both!\\
+We address this problem using Interfaces; they declare functions, but leave the class to implement them.\\
+\begin{lstlisting} [language=Java]
+	interface Lengthable
+	{
+	  int length();
+	}
+	interface Geometry2D extends Lengthable 
+	{
+	  int width();
+	}
+	class Canvas implements Geometry2D
+	{
+	  int length() {return -3;}
+	  int width() {return 27;}
+	}
+\end{lstlisting}
+\noindent There is a hierarchy here, but
+\begin{itemize} [itemsep=0mm]
+	\item a class can implement multiple interfaces.
+	\item parents pass code, but interfaces pass “obligations”/API.
+	\item interfaces form some type of a static version of duck typing.
+\end{itemize}
+\noindent Interfaces are often not powerful enough though;\\
+\indent if we use the same one many times, we may end up duplicating code.\\
+We can solve this with abstract classes, which merge interfaces and classes
+\begin{lstlisting} [language=Java]
+	abstract class C
+	{
+	  int length() {return 1;}
+	  abstract int width();
+	} 
+	new C(); // ERROR ~ width() is undefined!
+	abstract class D extends C
+	{
+	  int height() {return 3;}
+	} 
+	new D(); // ERROR ~ width() is undefined!
+	class E extends D
+	{
+	  int width() {return 2;}
+	}
+	C x = new E();
+	foo(x);
+\end{lstlisting}
+\noindent Final classes are in some sense the opposite of abstract.
+\indent Abstract Classes force you to subclass and define methods.\\
+\indent Final Classes don’t allow you to subclass and define sub-methods.\\
+\\
+A Final Class thus forms a leaf in the class hierarchy.
+Both classes and methods can be declared as final \& thus can’t be overwritten
+What are they good for?
+\begin{enumerate} [itemsep=0mm]
+	\item Provides a barrier preventing subclasses from misbehaving
+	\item Low level reasons we won’t discuss
+\end{enumerate}
+A bioengineer wrote a simulator of the contents of the cell in Java.\\
+It was a mess, unsurprisingly, since it was written by a bioengineer.\\
+Everything was declared ‘final’…Why? “because it made things faster!”\\
+Finals make things faster! Why? It lets the compiler ‘inline’ the body of the method.\\
+
+\subsubsection*{Concurrency}
+Concurrency is one of the biggest advantages of Java.\\
+To discuss it, consider the question: what is the world’s fastest computer?\\
+\indent This will let us think ahead and plan such that our language lasts
+The world’s fastest computer: SUMMIT:\\
+	\indent CPU in C/assembly to squeeze out performance.\\
+	\indent RedHat operating system (like SEASNet).\\
+	\indent Most of the power goes toward cooling but still relatively power efficient.\\
+	\indent Power cost of roughly a million laptops!\\
+	\indent Speed is determined by LINPAC.\\
+		\indent \indent $\equiv$ Matrix multiplication floating point operations (FLOP) per second\\
+	\indent This is the speed of 149e6 laptops!\\
+Java was designed at the supercomputers of 1990!\\
+\\
+The idea was to lash many processors/cores together.\\
+There were two main philosophies for this type of parallelism:\\
+	\indent SIMD — multiple instructions on one data set
+	\indent MIMD — multiple instruction pointers for multiple data sets (ex MIPS)
+The computer they looked at (POWER) does both:\\
+	\indent it has Nvidia (GPU-like devices) \& array instructions for small arrays (SIMD).\\
+	\indent it has simple instructions for complicated structures (MIMD).\\
+\\
+Java decided to focus on the latter:
+
+The Java abstraction for MIMD is called the “Thread”
+Each Thread corresponds to one computation with its own IP
+The life cycle of the Thread:
+\begin{enumerate} [itemsep=0mm]
+	\item Thread t = new Thread(); — NEW
+	\item t.start(); — RUNNABLE
+	\begin{enumerate} [itemsep=0mm]
+		\item compute — RUNNABLE
+		\item yield — RUNNABLE
+		\item IO — BLOCKED
+		\item wait — WAITING
+		\item sleep — TIMEDWAITING
+		\item return from run — TERMINATED
+	\end{enumerate}
+\end{enumerate}
+This leaves the Thread Object as the Threads “tombstone”.\\
+\\
+They are used in one of two ways
+\begin{enumerate} [itemsep=0mm]
+	\item the classic object-oriented method — subclass Thread \& override the run() method
+		\begin{lstlisting} [language=Java]
+	class Foo extends Thread
+	{
+	  void run() {
+	    /* this code will be run when you start the thread */}
+	}
+	Foo f = new Foo;
+	f.start(); // allocates resources and calls t.run()
+		\end{lstlisting}
+	\item the preferred, duck typing method — define a new class implementing Runnable
+		\begin{lstlisting} [language=Java]
+	// the interface is along the lines of:
+	interface Runnable 
+	{
+	  void run();
+	  ....
+	}
+	class Bar implements Runnable
+	{
+	  void run() {/* ... */}
+	}
+	Bar b = /* ... */;
+	new Thread(b);
+	\end{lstlisting}
+\end{enumerate} \medskip
+
+\noindent Threads have a major problem though, and that is the problem of Thread communication.\\
+Java’s solution is shared memory.\\
+ A Thread T can communicate with a Thread U by modifying a shared Object o
+ \begin{lstlisting} [language=Java]
+	// T:
+	O.set(x);
+	// U:
+	... 
+	u = get()		
+\end{lstlisting}
+\noindent The main problem with this is the problem of race conditions.\\
+get() may be called earlier or even concurrently with setting, causing a garbage get().\\
+Race Conditions are a big enough problem that Java has multiple techniques.
+\begin{enumerate} [itemsep=0mm]
+	\item Embarrassing Parallelism\\
+		this is the simplest and easiest, but is SLOW
+		\begin{lstlisting} [language=Java]
+	Thread t = /* ... */;
+	t.join(); // waits for t to finish
+		\end{lstlisting}
+	\item Volatile Instance Variables\\
+		The ‘volatile’ keyword tells the compiler it is intended for communication.\\
+		T he compiler then gets the variable on each usage, so access is not optimized away
+		(some compilers place this constraint on themselves; this is very specialized \& slow)
+		Not only does this influence speed, but also correctness:
+		\begin{lstlisting} [language=Java]
+	y = f(x) + g(x); // x may change between function calls
+	y = x - x; // optimization would make y zero
+	while (x == x) ; // optimization would make this an infinite loop
+	// volatile variables still leave room for errors, though:
+	class C
+	{
+	  volatile int x, y; // invariant: x < y
+	  int set(int newx) { x = newx; y = newx + 1;}
+	  int getx() {return x;}
+	  int gety() {return y;}
+	}
+	int a = getx();
+	int b = gety();
+	if (a >= b) disaster_strikes(); 
+	// we may grab x before a change and y after
+		\end{lstlisting}
+	\item Synchronized Methods/Monitors\\
+		Only one synchronized method may be used on an object at the same time.\\
+		This slows you down, since Threads much wait to execute.\\
+		Effectively places a lock on the object → methods must be VERY fast.\\
+		This fixes many errors that volatile doesn’t.
+		\begin{lstlisting} [language=Java]		
+	class C
+	{
+	  volatile int x, y;
+	  synchronized void set(int newx)
+	  {
+	    if (newx < newx + 1)
+	    {
+	      x = newx; y = newx + 1;
+	    }
+	  }
+	  int getx() {return x;}
+	  int gety() {return y;}
+	  synchronized long getBoth () {return ((long) x << 32) + y;}
+	}
+	long ab = getBoth();
+	long a = ab >> 32;
+	long b = ab & 0xFFFFFFFF;
+	if (a >= b) disaster_strikes();
+	\end{lstlisting}
+\item Waiting for events\\
+	We use this when our method is too slow to synchronize
+	\begin{lstlisting} [language=Java]
+	o.wait(); // remove all locks and wait until all are free again
+	o.notify(); // wake up one of the waiting Threads (FIFO is common)
+	o.notifyAll(); // wakes ALL the waiting threads 
+	// can be used to allow programmer's choice of next Thread
+		\end{lstlisting}
+		While Wait() does work in all addressed scenarios, it is too low level for many people.\\
+\end{enumerate}
+
+\subsubsection*{Exceptions}
+These are error conditions that interrupt the regular flow of a program
+The most general syntax is much like the syntax of C:
+\begin{lstlisting} [language=Java]
+	System.out.print("1"); 
+	try {
+	  System.out.print("2");
+	  if (true) throw new Exception(); 
+	  // if(true) so no code is unreachable
+	  System.out.print("3");
+	} catch (Exception e) {
+	  System.out.print("4");
+	} finally {
+	  System.out.print("5");
+	}
+	System.out.print("6");
+	// 12456 -- finally is run even with an exception!
+ \end{lstlisting} \medskip
+ 
+\noindent Java implements them in an interesting way:\\
+\indent There is a class called Throwable which contains two subclasses:
+\begin{itemize} [itemsep=0mm]
+	\item error — exceptions that cannot be caught
+	\item exception — exceptions that can be caught
+\end{itemize}
+\noindent Exceptions derived from error or exception.runtimeException are unchecked.\\
+Checked exceptions cannot be ignored at ANY LEVEL.\\
+We can use this to implement our own exceptions:\\
+\begin{lstlisting} [language=Java]
+	public class OutOfGas extends Exception
+	{
+	  private int miles;
+	  public OutOfGas (String details, int m) 
+	  {
+	    super (details); miles = m;
+	  }
+	  public int getMiles() 
+	  {
+	    return miles;
+	  }
+	}
+	try {
+	  throw new OutOfGas ("You have run out of gas");
+	} catch (OutOfGas e) 
+	{
+	  System.out.print(e.getMessage());
+	  System.out.printIn("Odometer: " + e.getMiles());
+	}
+\end{lstlisting} \medskip
+
+\noindent This can be done in two major ways, which are built into Java
+\begin{enumerate} [itemsep=0mm]
+	\item \textbf{\underline{Cyclic Barrier}}\\
+		Threads run independently, but wait at a barrier point.\\
+		Runnable object run() may be called every time the last Thread reaches the barrier.\\
+		\begin{lstlisting} [language=Java]
+	// Example: Matrix Decomposition
+	class Solver
+	{
+	  final int N;
+	  final float[][] data;
+	  final CyclicBarrier barrier;
+
+	  class Worker implements Runnable
+	  {
+	    int myRow;
+	    Worker(int row) { myRow = row; }
+	    public void run() 
+	    {
+	      while (!done()) 
+	      {
+	        processRow(myRow);
+		try {
+		  barrier.await();
+		} catch (InterruptedException ex) {
+		  return;
+		} catch (BrokenBarrierException ex) {
+		  return;
+		}
+	      }
+	    }
+	  }
+
+	  public Solver(float[][] matrix) 
+	  {
+	    data = matrix;
+	    N = matrix.length;
+	    barrier = new CyclicBarrier(N, new Runnable() {
+	      public void run() {
+	        mergeRows(...);
+	      }
+	    });
+	    for (int i = 0; i < N; ++i)
+	      new Thread(new Worker(i)).start();
+
+	    waitUntilDone();
+	  }
+	}
+		\end{lstlisting}
+		
+	\item \textbf{\underline{Exchanger}}\\
+		Works similarly to a “take a variable, leave a variable” drop box
+		\begin{lstlisting} [language=Java]
+	// swap buffers between threads such that 
+	// filling thread gets an empty one when full
+	class FillAndEmpty {
+	  Exchanger<DataBuffer> exchanger = new Exchanger<DataBuffer>();
+	  DataBuffer initialEmptyBuffer = ... a made-up type
+	  DataBuffer initialFullBuffer = ...
+
+	  class FillingLoop implements Runnable {
+	    public void run() {
+	      DataBuffer currentBuffer = initialEmptyBuffer;
+	      try {
+		while (currentBuffer != null) {
+		  addToBuffer(currentBuffer);
+		  if (currentBuffer.isFull())
+		  currentBuffer = exchanger.exchange(currentBuffer);
+		}
+	      } catch (InterruptedException ex) { ... handle ... }
+	    }
+	  }
+
+	  class EmptyingLoop implements Runnable {
+	    public void run() {
+	      DataBuffer currentBuffer = initialFullBuffer;
+	      try {
+		while (currentBuffer != null) {
+		  takeFromBuffer(currentBuffer);
+		  if (currentBuffer.isEmpty())
+		  currentBuffer = exchanger.exchange(currentBuffer);
+		}
+	      } catch (InterruptedException ex) { ... handle ...}
+	    }
+	  }
+ 
+	  void start() {
+	    new Thread(new FillingLoop()).start();
+	    new Thread(new EmptyingLoop()).start();
+	  }
+	}
+		\end{lstlisting}
+\end{enumerate}
+
+\end{document}
