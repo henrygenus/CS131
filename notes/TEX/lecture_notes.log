@@ -1643,7 +1643,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  35069 strings out of 480608
  766318 string characters out of 5903631
- 1202071 words of memory out of 5000000
+ 1202072 words of memory out of 5000000
  50388 multiletter control sequences out of 15000+600000
  545403 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1665,7 +1665,7 @@ e/2020/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/
 20/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2020
 /texmf-dist/fonts/type1/public/cm-super/sfti0900.pfb></usr/local/texlive/2020/t
 exmf-dist/fonts/type1/public/cm-super/sftt0900.pfb>
-Output written on lecture_notes.pdf (63 pages, 647402 bytes).
+Output written on lecture_notes.pdf (63 pages, 649600 bytes).
 PDF statistics:
  285 PDF objects out of 1000 (max. 8388607)
  193 compressed objects within 2 object streams
