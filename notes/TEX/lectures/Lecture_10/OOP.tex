@@ -136,7 +136,7 @@ There are many methods of calling functions:
 		\end{lstlisting}
 		This avoids copying overhead, but introduces problems with aliasing:
 		\begin{lstlisting} [language=C]
-		void trouble(int &x, int &y) {
+	void trouble(int &x, int &y) {
 	  x = 5;
 	  y = x + 7;
 	}
@@ -246,9 +246,9 @@ Upward inference is called \textbf{\underline{synthesis}}.\\
 These let us derive information from grammar rules\\
 \indent plus $\rightarrow$ id + id\\
 \indent \indent type(plus) = \\
-\indent \indent if type(id1) == type(id2) == int\\
-\indent \indent then int\\
-\indent \indent else float\\
+\indent \indent \indent if type(id1) == type(id2) == int\\
+\indent \indent \indent \ \ then int\\
+\indent \indent \indent \ \ else float\\
 \indent expr → plus\\
  \indent \indent type(expr) = type(plus)\\
 \\ 
@@ -269,8 +269,8 @@ These let us derive information from grammar rules\\
 Allow us to attempt to use method (c) to define a subset of OCaml in Prolog:\\
 \begin{lstlisting} [language=Prolog]
 		m(E1+E2, C, Vsum) :-
-		m(E1, C, V1),
-		m(E2, C, V2),
+		  m(E1, C, V1),
+		  m(E2, C, V2),
 		Vsum is V1 + V2).
 		% we have thus defined a high level '+' by a lower level '+'
 		m(K, C, K) :- integer(K).
@@ -278,22 +278,22 @@ Allow us to attempt to use method (c) to define a subset of OCaml in Prolog:\\
 		m(Var, C, Val) :- member(Var=Val, C).
 		% defines variable binding
 		m(let(X, E1, E2), C, Val) :-
-		m(E1, C, V1),
-		m(E2, [X=V1|C], Val).
+		  m(E1, C, V1),
+		  m(E2, [X=V1|C], Val).
 		% defines 'let' binding
 		m(fun(X, E), C, lambda(X, E)).
 		% functions need not be evaluated
 		m(call(E1, E2), C, Result) :-
-		m(E1, C, lambda(Xf, Ef)),
-		m(E2, C, V2),
-		m(Ef, [Xf=V2|C], Result).
+		  m(E1, C, lambda(Xf, Ef)),
+		  m(E2, C, V2),
+		  m(Ef, [Xf=V2|C], Result).
 \end{lstlisting}
 \noindent These semantics use dynamic scoping; static would be more complicated.\\
 \\
-The history of programming languages in a few lines, according to Paul Eggert:
-	\indent “Lots of attempts to ‘take over the world’”
-	\indent “None have succeeded”
-	\indent “We still have a lot of variety, and that is not going away”
+The history of programming languages in a few lines, according to Paul Eggert:\\
+	\indent “Lots of attempts to ‘take over the world’”\\
+	\indent “None have succeeded”\\
+	\indent “We still have a lot of variety, and that is not going away”\\
 	Thus we must keep always the basic principals in mind
 
 \end{document}

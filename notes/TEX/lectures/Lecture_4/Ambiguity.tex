@@ -19,13 +19,13 @@ This has an ambiguity, as can be seen by the two parse trees below:
 					}
 					edge from parent node {}
 				}
-				child {node {E}
+				child {node [circle, draw] {}
 					child{node {+}
 						edge from parent node {}
 					}
 					edge from parent node {}
 				}
-				child {node {E}
+				child {node [circle, draw] {}
 					child{node {b}
 						edge from parent node {}
 					}
@@ -35,7 +35,7 @@ This has an ambiguity, as can be seen by the two parse trees below:
 			}
 			child [missing]
 			child {node[circle, draw] {}
-				child {node {E}
+				child {node [circle, draw] {}
 						child{node {*}
 							edge from parent node {}
 						}
@@ -64,7 +64,7 @@ This has an ambiguity, as can be seen by the two parse trees below:
 				edge from parent node {}
 			}
 			child {node[circle, draw] {}
-				child {node {E}
+				child {node [circle, draw] {}
 						child{node {*}
 							edge from parent node {}
 						}
@@ -80,7 +80,7 @@ This has an ambiguity, as can be seen by the two parse trees below:
 					}
 					edge from parent node {}
 				}
-				child {node {E}
+				child {node [circle, draw] {}
 					child{node {+}
 						edge from parent node {}
 					}
@@ -115,7 +115,7 @@ Now we have a single correct tree:
 				edge from parent node {}
 			}
 			child {node[circle, draw] {}
-				child {node {T}
+				child {node [circle, draw] {}
 						child{node {+}
 							edge from parent node {}
 						}
@@ -131,7 +131,7 @@ Now we have a single correct tree:
 					}
 					edge from parent node {}
 				}
-				child {node {T}
+				child {node [circle, draw] {}
 					child{node {*}
 						edge from parent node {}
 					}
@@ -200,12 +200,12 @@ Consider the following two trees:
 				[E
 					[return]
 					[d]
+					[;]
 				]
 			]
 		]
 	]
-	\end{forest} \end{center}
-	\begin{center} \begin{forest}
+	\end{forest} \begin{forest}
 	 forked edges,
 	[E
 		[if]
@@ -230,6 +230,7 @@ Consider the following two trees:
 				[E
 					[return]
 					[d]
+					[;]
 				]
 			]
 		]
@@ -243,19 +244,16 @@ To see why, we must consider the following two trees for the statement a + b * c
 \begin{minipage}[label=ab]{0.5\linewidth} 
 \begin{forest}
 	[E
-		[a]
-		[+]
+		[ [a]]
+		[ [+]]
 		[E
 			[b]
 			[*]
-			[c]
-		]
-		[+]
-		[d]
-	]
+			[c]]
+		[ [+]]
+		[ [d]]]
 \end{forest}  \end{minipage}%
 \begin{minipage}[cd]{0.5\linewidth} \begin{forest}
-	[E
 		[E
 			[E 
 				[T [a]]

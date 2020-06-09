@@ -228,8 +228,6 @@ The idea of this is that we never need to call free!
 			\label{fig:test}
 		\end{figure}
 
-
-
 		Older objects appear farther to the left; new allocations are taken from the nursery.\\
 		Objects tend to point to older objects that rarely mutate, so garbage is in newer generations.\\
 		In actuality, there is some overlap, since there are exceptions for backward pointers
@@ -242,7 +240,6 @@ The idea of this is that we never need to call free!
 			\caption{Removing fragmentation from the nursery}
 			\label{fig:test}
 		\end{figure}
-
 
 		The copying keyword comes from the merging to remove fragmentation.\\
 		Upsides:
@@ -269,9 +266,9 @@ The idea of this is that we never need to call free!
 \\
 		ISSUE — Multithreading.\\
 		The naive multithreaded garbage collector requires synchronization, and thus is slow.\\
-		Java avoids a global lock by giving each nursery its own lock
-		Typically, threads share only old objects, so in practice this works well
-		In the worst case, this reduces to the global lock case
+		Java avoids a global lock by giving each nursery its own lock.\\
+		Typically, threads share only old objects, so in practice this works well.\\
+		In the worst case, this reduces to the global lock case.\\
 \\
 		ISSUE — Real-Time.\\
 		In this case, we don’t care particularly about the speed of ‘new’, but predictability.\\
