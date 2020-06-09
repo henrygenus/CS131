@@ -14,7 +14,7 @@ Let's consider some specific examples:
 				\item was developed for the GE model 225 CPU.  Specs:
 					\begin{itemize} [itemsep=0mm]
 						\item about 40 microseconds per addition, and 500 microseconds per division.
-						\item about 40 KiB RAM, which was huge for the time.
+						\item about 40 KiB RAM, which was huge for the time.\\
 							This is big enough that the device could fit all of BASIC in its RAM!
 					\end{itemize}
 				\item BASIC is a small base language which supports many extensions.
@@ -40,7 +40,7 @@ All of these issues are issues of \textbf{\underline{scale}}; languages may not 
 		\item larger machines with increased array size and multiple CPUs
 		\item complex problems that require multiple programmers
 	\end{itemize}
-We address these issues in a few object-oriented ways.\\
+We address these issues in a few object-oriented ways.
 
 \subsubsection*{Names/Identifiers}
 These are arbitrary within a program, so why is this the first thing we discuss?\\
@@ -92,15 +92,15 @@ We often access bound data via its mapping in the symbol table.  These bindings 
 \begin{lstlisting} [language=C++]
 short a = 10; // a is bound to 10
 short *p = &a; // pointer is bound to the address of a
-assert(int *p = &10); // ERROR: literals do not have memory addresses
-assert(sizeof{10} = sizeof(a)); // NO -- 10 is 4 bytes but a is only one
+int *p = &10; // EXCEPTION -- literals do not have memory addresses
+assert(sizeof(10) == sizeof(a)); // NO -- 10 is 4 bytes but a is only one
 \end{lstlisting}
 Binding is done in one of two ways:
 \begin{enumerate} [itemsep=0mm]
 	\item \textbf{\underline{Explicit Binding}} $\equiv$ binding written directly into a program
 	\item \textbf{\underline{Implicit Binding}} $\equiv$ binding done as a consequence of a program
 \end{enumerate}
-Implicit binding is often considered bad practice, so explicit binding is often encouraged.\\
+Implicit binding is often considered bad practice, so explicit binding is encouraged.\\
 In many languages, types must be declared explicitly so as to avoid errors.\\
 These languages bind variables to values between compilation and linkage, 
 	in a time called \textbf{\underline{binding time}}.\\
@@ -175,15 +175,13 @@ We interpret the float value $(sef)$ according to the following rule:
 				\text{ Not a Number (NaN) } & \text{ for } e = 255 \text{ \&\& } f != 0
 			\end{array} \right\}
 	\end{equation*}
-This implementation results in a couple special cases:
-\begin{itemize} [itemsep=0mm]
+This implementation results in a couple special cases: \begin{itemize} [itemsep=0mm]
 	\item there are two distinct zeroes\\
 		$\rightarrow$  two variables can have different data with the same value.
 	\item NaN evaluates false no matter what it is compared with\\
 		$\rightarrow$ two variables can have the same data and different values.
 \end{itemize}
-Floats can trigger a few exceptions:
-\begin{enumerate} [itemsep=0mm]
+Floats can trigger a few exceptions: \begin{enumerate} [itemsep=0mm]
 	\item overflow -- exponent too large (1e308 x 1e308)
 	\item underflow -- exponent too small (1e-307 x 1e-307)
 	\item bad arguments -- (0.0/0.0, sqrt(-1))
@@ -191,14 +189,12 @@ Floats can trigger a few exceptions:
 \end{enumerate}
 Traditionally, hardware would trap on exceptions 1-3 and ignore 4, but now they all return special values.\\
 \\
-Types have a few ways to avoid exceptions:
-\begin{itemize} [itemsep=0mm]
+Types have a few ways to avoid exceptions: \begin{itemize} [itemsep=0mm]
 	\item \textbf{\underline{Annotations}}\\
 		Types document programs, and the compiler uses this documentation to report errors. (ex. int val;)\\
 	\item \textbf{\underline{Inference}}\\
 		The compiler infers the type from the code (ex. 1.0, 1.0f, 1)\\
-		There are two standard approaches:
-		\begin{itemize} [itemsep=0mm]
+		There are two standard approaches: \begin{itemize} [itemsep=0mm]
 			\item bottom-up -- C: 3 + 4.5 + 'a' $\rightarrow$ float
 			\item top-down -- OCaml: [3, 4, 5] = (f y z) $\rightarrow$ int -> int -> int
 		\end{itemize}

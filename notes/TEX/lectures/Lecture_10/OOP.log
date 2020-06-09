@@ -1042,4 +1042,32 @@ File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) [3]
 
-./OOP.tex:238: LaTeX Error: File `attribute_tree'
+./OOP.tex:238: LaTeX Error: File `attribute_tree' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.238 ...hics[width=0.2\textwidth]{attribute_tree}
+                                                  
+? 
+./OOP.tex:238: Emergency stop.
+ ...                                              
+                                                  
+l.238 ...hics[width=0.2\textwidth]{attribute_tree}
+                                                  
+I could not locate the file with any of these extensions:
+.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ 
+Here is how much of TeX's memory you used:
+ 29645 strings out of 480608
+ 676944 string characters out of 5903631
+ 1153542 words of memory out of 5000000
+ 45041 multiletter control sequences out of 15000+600000
+ 538276 words of font info for 43 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 79i,6n,84p,1646b,2047s stack positions out of 5000i,500n,10000p,200000b,80000s
+./OOP.tex:238:  ==> Fatal error occurred, no output PDF file produced!

@@ -30,45 +30,45 @@ The basics:\\
 
 Our first logic program will be SORTING
 \begin{lstlisting} [language=Prolog]
-	% First we write specifications for what it means to sort a list
-	% L -- unsorted list
-	% P -- sorted list
- 	% L&P must be permutations of each other
- 	% P must be sorted
- 	% First we state the top level requirements:
- 	sort(L, P) :- permute(L, P), sort(P).
- 	% sort is true for L & P if permute and sort are true
- 	sorted([]).
- 	% the empty list is sorted
- 	sorted([_]).
- 	% a single element list is sorted
- 	sorted([X, [Y|L]) :- X =< Y, sorted([Y|L]).
- 	% X::Y::L is sorted if X <= Y and Y::L is sorted
- 	permute([], []).
- 	% the empty list is a permutation
- 	permute([X|L], R) :-
- 	permute(L, PL),
- 	append(PL1, PL2, PL),
- 	append(PL2, [X|PL1], R).
- 	append([], L, L).
- 	append([X|L1], [X|L2], L) :- append(L1, L2, L).
- 	% a fun consequence of this is that we can run code in either direction!
- 	?- sort([1, 9, -3], R).
- 	R = [-3, 1, 9].
- 	?- append([a, b], [c, d, e], R).
- 	R = [a, b, c, d, e].
- 	?- append(X, [c|Y], [a, b, c, d, e]).
- 	X = [a, b].	
- 	Y = [d, e].
- 	% a predicate can even return multiple; we type ';' to see the next
- 	?- append(x, y, [a, b, c, d, e]).
- 	x = [], y = [a, b, c, d, e] ;
- 	x = [a], y = [b, c, d, e] ;
- 	x = [a, b], y = [c, d, e] ;
- 	x = [a, b, c], y = [d, e] ;
- 	x = [a, b, c, d], y = [e] ;
- 	x = [a, b, c, d, e], y = [] ;
- 	no.
+% First we write specifications for what it means to sort a list
+% L -- unsorted list
+% P -- sorted list
+% L&P must be permutations of each other
+% P must be sorted
+% First we state the top level requirements:
+sort(L, P) :- permute(L, P), sort(P).
+% sort is true for L & P if permute and sort are true
+sorted([]).
+% the empty list is sorted
+sorted([_]).
+% a single element list is sorted
+sorted([X, [Y|L]) :- X =< Y, sorted([Y|L]).
+% X::Y::L is sorted if X <= Y and Y::L is sorted
+permute([], []).
+% the empty list is a permutation
+permute([X|L], R) :-
+permute(L, PL),
+append(PL1, PL2, PL),
+append(PL2, [X|PL1], R).
+append([], L, L).
+append([X|L1], [X|L2], L) :- append(L1, L2, L).
+% a fun consequence of this is that we can run code in either direction!
+?- sort([1, 9, -3], R).
+R = [-3, 1, 9].
+?- append([a, b], [c, d, e], R).
+R = [a, b, c, d, e].
+?- append(X, [c|Y], [a, b, c, d, e]).
+X = [a, b].	
+Y = [d, e].
+% a predicate can even return multiple; we type ';' to see the next
+?- append(x, y, [a, b, c, d, e]).
+x = [], y = [a, b, c, d, e] ;
+x = [a], y = [b, c, d, e] ;
+x = [a, b], y = [c, d, e] ;
+x = [a, b, c], y = [d, e] ;
+x = [a, b, c, d], y = [e] ;
+x = [a, b, c, d, e], y = [] ;
+no.
 \end{lstlisting}
 
 \noindent This should have been obvious to us; we utilize append in this way in our code!\\
@@ -116,10 +116,10 @@ A Prolog term is one of:
 \noindent But if predicates are represented as structures, how do we actually evaluate them?\\
 \indent We use the keyword ‘is’
 \begin{lstlisting} [language=Prolog]
-	?- N is 2+2.
-	N = 4.
-	?- is(N, 2+2).
-	N = 4.
+?- N is 2+2.
+N = 4.
+?- is(N, 2+2).
+N = 4.
 \end{lstlisting}
 \noindent This tends not to be used much, since declarative statements are rare in Prolog.\\
 Prolog instead tends to represent first-order logic\\
@@ -128,28 +128,30 @@ Structures can take one of three forms:
 \begin{enumerate}
 \item fact — a statement that is true
 \begin{lstlisting} [language=Prolog]
-	true.
-	prereq(CS31, CS131).
-	prereq(CS31, CS111).
-	equals(X, X).
+true.
+prereq(CS31, CS131).
+prereq(CS31, CS111).
+equals(X, X).
 \end{lstlisting}
 \item rules — a predicate that is conditionally true
 \begin{lstlisting} [language=Prolog]
-	ipr(A, B) :- prereq(A, Q), ipr(X, B).
-	ipr(A, B) :- prereq(A, B).
- 	% this compiles fine, but the below causes an infinite loop:
- 	ipr(A, B) :- prereq(A, B).
- 	ipr(A, B) :- prereq(A, Q), ipr(X, B).
- 	% all of these rules are considered the same predicate, 
- 	% since they share functor and argument count
- 	c. goals - queries to be evaluated
- 	?- X = 3.
- 	X = 3.
- 	yes.
- 	?- ipr(CS31, Z).
- 	Z = CS131? ;
- 	Z = CS111? ;
- 	no.
+ipr(A, B) :- prereq(A, Q), ipr(X, B).
+ipr(A, B) :- prereq(A, B).
+% this compiles fine, but the below causes an infinite loop:
+ipr(A, B) :- prereq(A, B).
+ipr(A, B) :- prereq(A, Q), ipr(X, B).
+% all of these rules are considered the same predicate, 
+% since they share functor and argument count
+\end{lstlisting}
+\item goals - queries to be evaluated
+\begin{lstlisting} [language=Prolog]
+ ?- X = 3.
+ X = 3.
+ yes.
+ ?- ipr(CS31, Z).
+ Z = CS131? ;
+ Z = CS111? ;
+ no.
 \end{lstlisting} \medskip
 \end{enumerate}
 \subsubsection*{Failure}
@@ -161,10 +163,10 @@ Thus failure becomes a major factor in flow control.\\
 A simple example:
 \indent Say the registrar provides us with the following predicate:
 \begin{lstlisting} [language=Prolog]
-	prereq(CS31, CS32).
- 	prereq(CS31, CS111).
- 	prereq(CS31, CS131).
- 	prereq(CS131, CS132).
+prereq(CS31, CS32).
+prereq(CS31, CS111).
+prereq(CS31, CS131).
+prereq(CS131, CS132).
 \end{lstlisting}
 Can we conclude that dance 101 is not a prerequisite for CS131?\\
 	\indent Logically NO, we just can’t prove it,\\
@@ -209,62 +211,62 @@ The interpreter then works on subtrees from left to right, depth-first, and back
 
 Infinite loops are relatively easy to fall into:
 \begin{lstlisting} [language=Prolog]
-	memb(X, [X|_]).
- 	memb(X, [_, L]) :- memb(X, L).
- 	/* the standard forward usage would be: */
- 	|?- memb(X, [a, b, c, d, e]).
-	X = a? ;
-	X = b? ;
-	X = c? ;
-	X = d? ;
-	no.
-	/* we can get strange repeat cases:*/
-	|?- memb(a, [a, b, x, y, d, e, z]).
-	true? ;
-	X=a? ;
-	Y = a? ;
-	Z = a? ;
-	no.
-	/* we can even test the goal without any literals */
-	|?- memb(A, B).
-	B = [A|_]? ;
-	B = [_, A|_]? ;
-	B = [_, _, A|_]? % this gives us an infinite loop!
-	app([], L, L).
-	app([X|L], M, [A|LM]) :- app(L, M, LM).
-	|?- app(X, Y, [a, b, c]).
-	X = []
-	Y = [a, b, c]? ;
-	X = [a]
-	Y = [b, c]? ;
-	X = [a, b]
-	Y = [c]? ;
-	X = [a, b, c]
-	Y = []? ;
-	no.
-	/* even this predicate is not safe, though: */
+memb(X, [X|_]).
+memb(X, [_, L]) :- memb(X, L).
+/* the standard forward usage would be: */
+|?- memb(X, [a, b, c, d, e]).
+X = a? ;
+X = b? ;
+X = c? ;
+X = d? ;
+no.
+/* we can get strange repeat cases:*/
+|?- memb(a, [a, b, x, y, d, e, z]).
+true? ;
+X=a? ;
+Y = a? ;
+Z = a? ;
+no.
+/* we can even test the goal without any literals */
+|?- memb(A, B).
+B = [A|_]? ;
+B = [_, A|_]? ;
+B = [_, _, A|_]? % this gives us an infinite loop!
+app([], L, L).
+app([X|L], M, [A|LM]) :- app(L, M, LM).
+|?- app(X, Y, [a, b, c]).
+X = []
+Y = [a, b, c]? ;
+X = [a]
+Y = [b, c]? ;
+X = [a, b]
+Y = [c]? ;
+X = [a, b, c]
+Y = []? ;
+no.
+/* even this predicate is not safe, though: */
 \end{lstlisting}
 \noindent We will now write our canonical reverse:
 \begin{lstlisting} [language=Prolog]
- 	naive_reverse([], []).
- 	naive_reverse([X|Y], Rx) :- naive_reverse(L, R), append(R, [x], Rx).
- 	% this is O(N^2); we must use a general solution with an accumulator!
- 	revapp([], A, A).
- 	revapp([X|L], A, R) :- revapp(L, [X|A], R).
- 	% now for the application:
- 	fast_reverse(L, R) :- revapp(L, [], R).
- 	% We can compare the two implementations:
- 	|?- naive_reverse([a, b, c], R).
- 	R = [c, b, a].
- 	|?- fast_reverse([a, b, c, d, e, f, g], R).
- 	R = [g, f, e, d, c, b, a].
- 	|?- naive_reverse(L, [a, b, c, d]).
- 	L = [d, c, b, a]? ;
- 	Fatal Error: global stack overflow!
- 	% what happened? can fast_reverse handle it?
- 	|?- fast_reverse(L, [a, b, c, d]).
- 	L = [d, c, b, a]? ;
- 	Fatal Error: global stack overflow!
+ naive_reverse([], []).
+ naive_reverse([X|Y], Rx) :- naive_reverse(L, R), append(R, [x], Rx).
+ % this is O(N^2); we must use a general solution with an accumulator!
+ revapp([], A, A).
+ revapp([X|L], A, R) :- revapp(L, [X|A], R).
+ % now for the application:
+ fast_reverse(L, R) :- revapp(L, [], R).
+ % We can compare the two implementations:
+ |?- naive_reverse([a, b, c], R).
+ R = [c, b, a].
+ |?- fast_reverse([a, b, c, d, e, f, g], R).
+ R = [g, f, e, d, c, b, a].
+ |?- naive_reverse(L, [a, b, c, d]).
+ L = [d, c, b, a]? ;
+ Fatal Error: global stack overflow!
+ % what happened? can fast_reverse handle it?
+ |?- fast_reverse(L, [a, b, c, d]).
+ L = [d, c, b, a]? ;
+ Fatal Error: global stack overflow!
 \end{lstlisting}
 \newpage
 How can we debug this?\\
@@ -277,34 +279,34 @@ How can we debug this?\\
 \end{figure}
 
 \begin{lstlisting} [language=Prolog]
- 	| ?- trace, naive_reverse(L, [a,b]).
- 	The debugger will first creep -- showing everything (trace)
- 	1 1 Call: naive_reverse(_23,[a,b]) ?
- 	2 2 Call: naive_reverse(_63,_102) ?
- 	2 2 Exit: naive_reverse([],[]) ?
- 	3 2 Call: append([],[_62],[a,b]) ?
- 	3 2 Fail: append([],[_62],[a,b]) ?
- 	2 2 Redo: naive_reverse([],[]) ?
- 	3 3 Call: naive_reverse(_89,_128) ?
- 	3 3 Exit: naive_reverse([],[]) ?
- 	4 3 Call: append([],[_88],_156) ?
- 	4 3 Exit: append([],[_88],[_88]) ?
- 	2 2 Exit: naive_reverse([_88],[_88]) ?
- 	5 2 Call: append([_88],[_62],[a,b]) ?
- 	5 2 Exit: append([a],[b],[a,b]) ?
- 	1 1 Exit: naive_reverse([b,a],[a,b]) ?
+ | ?- trace, naive_reverse(L, [a,b]).
+ The debugger will first creep -- showing everything (trace)
+ 1 1 Call: naive_reverse(_23,[a,b]) ?
+ 2 2 Call: naive_reverse(_63,_102) ?
+ 2 2 Exit: naive_reverse([],[]) ?
+ 3 2 Call: append([],[_62],[a,b]) ?
+ 3 2 Fail: append([],[_62],[a,b]) ?
+ 2 2 Redo: naive_reverse([],[]) ?
+ 3 3 Call: naive_reverse(_89,_128) ?
+ 3 3 Exit: naive_reverse([],[]) ?
+ 4 3 Call: append([],[_88],_156) ?
+ 4 3 Exit: append([],[_88],[_88]) ?
+ 2 2 Exit: naive_reverse([_88],[_88]) ?
+ 5 2 Call: append([_88],[_62],[a,b]) ?
+ 5 2 Exit: append([a],[b],[a,b]) ?
+ 1 1 Exit: naive_reverse([b,a],[a,b]) ?
  
- 	L = [b,a] ? ;
- 	1 1 Redo: naive_reverse([b,a],[a,b]) ?
- 	2 2 Redo: naive_reverse([_88],[_88]) ?
- 	3 3 Redo: naive_reverse([],[]) ?
- 	4 4 Call: naive_reverse(_115,_154) ?
- 	4 4 Exit: naive_reverse([],[]) ?
- 	5 4 Call: append([],[_114],_182) ?
- 	% the system finds a match of the appropriate length, 
- 	% and if we continue it looks for a longer one, which it won't find!
- 	% NOTE: we could also perform a manual debug if we wanted ("app" is self-chosen)
- 	|?- append(X, Y, [a, b, c, d]), write(app(X, Y)), nl, fail.
+ L = [b,a] ? ;
+ 1 1 Redo: naive_reverse([b,a],[a,b]) ?
+ 2 2 Redo: naive_reverse([_88],[_88]) ?
+ 3 3 Redo: naive_reverse([],[]) ?
+ 4 4 Call: naive_reverse(_115,_154) ?
+ 4 4 Exit: naive_reverse([],[]) ?
+ 5 4 Call: append([],[_114],_182) ?
+ % the system finds a match of the appropriate length, 
+ % and if we continue it looks for a longer one, which it won't find!
+ % NOTE: we could also perform a manual debug if we wanted ("app" is self-chosen)
+ |?- append(X, Y, [a, b, c, d]), write(app(X, Y)), nl, fail.
 \end{lstlisting}
 
 \subsubsection*{Unification}
@@ -360,18 +362,18 @@ BUT this can lead us into trouble...
 In this model, our behavior at choice points determines our efficiency; this is called \textbf{\underline{control}}.\\
 Consider the following examples:
 \begin{lstlisting} [language=Prolog]
-	fail. % this is hard wired, and produces an empty search tree
- 	true. % this forms a tree with a single node
- 	% the following is akin to C's while(true), and is built in
- 	repeat.
- 	repeat :- repeat.
- 	|?- repeat, write(X), fail. % infinite loop of X's
- 	% this forms a right-recursive search tree, and finds infinite solutions
- 	% the following is not built in, but is logically equivalent to repeat
- 	loop :- loop.
- 	loop.
- 	% this forms a left recursive search tree, and thus will find no solution!
- 	% it therefore cannot be proven
+fail. % this is hard wired, and produces an empty search tree
+true. % this forms a tree with a single node
+% the following is akin to C's while(true), and is built in
+repeat.
+repeat :- repeat.
+|?- repeat, write(X), fail. % infinite loop of X's
+% this forms a right-recursive search tree, and finds infinite solutions
+% the following is not built in, but is logically equivalent to repeat
+loop :- loop.
+loop.
+% this forms a left recursive search tree, and thus will find no solution!
+% it therefore cannot be proven
 \end{lstlisting}
 \noindent Suppose we have the following search tree:
 
@@ -425,30 +427,30 @@ Consider the following examples:
 
 The usage is as follows:
 \begin{lstlisting} [language=Prolog]
- 	complicated(X, Y, Z) :- generate(X, Y, Z), test(X, Y, Z).
- 	% suppose we know that test/3 is slow and will fail unless X is in Y
- 	% we can thus perform this check before performing our slow function
- 	complicated(X, Y, Z) :- generate(X, Y, Z), member(X, Y), test(X, Y, Z).
- 	% this still has an efficiency problem! 
-	% consider X = a, Y = [a, b, c, a, c, a, d, a]
- 	% our program will perform test 4x more than necessary!
- 	% we can improve this with the cut!
- 	memberchk(X, [X|_]) :- !.
- 	memberchk(X, [_|L]) :- memberchk(X, L).
- 	% thus we can greatly improve our efficiency:
- 	complicated(X, Y, Z) :- generate(X, Y, Z), memberchk(X, Y), test(X, Y, Z).
+ complicated(X, Y, Z) :- generate(X, Y, Z), test(X, Y, Z).
+ % suppose we know that test/3 is slow and will fail unless X is in Y
+ % we can thus perform this check before performing our slow function
+ complicated(X, Y, Z) :- generate(X, Y, Z), member(X, Y), test(X, Y, Z).
+ % this still has an efficiency problem! 
+% consider X = a, Y = [a, b, c, a, c, a, d, a]
+% our program will perform test 4x more than necessary!
+% we can improve this with the cut!
+memberchk(X, [X|_]) :- !.
+memberchk(X, [_|L]) :- memberchk(X, L).
+% thus we can greatly improve our efficiency:
+complicated(X, Y, Z) :- generate(X, Y, Z), memberchk(X, Y), test(X, Y, Z).
 \end{lstlisting}
 \noindent This is great, but the cut is very much the ‘goto’ of prolog: it is risky!
 \begin{lstlisting} [language=Prolog]
- 	\+(P) :- P, !, fail.
- 	\+(_).
- 	% this only succeeds if P is false! 
- 	% it is not equivalent to 'not', consider:
- 	|?- X=1, \+(X=2), write(ok).
- 	% writes 'ok'
- 	|?- \+(X=2), X=1, write(ok).
- 	% fails, since X is already bound to 1
- 	% thus \+ is not commutative!
+ \+(P) :- P, !, fail.
+ \+(_).
+ % this only succeeds if P is false! 
+ % it is not equivalent to 'not', consider:
+ |?- X=1, \+(X=2), write(ok).
+ % writes 'ok'
+ |?- \+(X=2), X=1, write(ok).
+ % fails, since X is already bound to 1
+ % thus \+ is not commutative!
 \end{lstlisting}
 \noindent This may seem like semantic nitpicking, but the idea is actually central to prolog.\\
 For example, theoreticians would say \\
@@ -464,13 +466,13 @@ This is not possible for integer arithmetic due to Godel’s Theorem/Turing’s 
 Thus $\backslash$+ really means “not provable” (It even looks like $\not\models$)\\
 The closed world assumption lets us use $\backslash$+ in some cases:
 \begin{lstlisting} [language=Prolog]
- 	prereq(CS31, CS131).
- 	% ...
- 	|?- \+ prereq(dance101, CS131).
- 	% succeeds, which is correct with a closed world
- 	|?- \+(X=1).
- 	% fails, since X is not currently bound
- 	% we thus call X a ground term, 
-	% and we insist \+ takes only ground terms
+ prereq(CS31, CS131).
+ % ...
+ |?- \+ prereq(dance101, CS131).
+ % succeeds, which is correct with a closed world
+ |?- \+(X=1).
+ % fails, since X is not currently bound
+ % we thus call X a ground term, 
+% and we insist \+ takes only ground terms
 \end{lstlisting}
 \end{document}

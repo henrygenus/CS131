@@ -7,10 +7,10 @@ Types can be broken into two major categories:
 	\item \textbf{\underline{Concrete Types}} have an implementation directly visible to the programmer.\\
 		For example:
 			\begin{lstlisting} [language=c++]
-		typedef struct complex
-		{
-		  double re, im;
-		}
+	typedef struct complex
+	{
+	  double re, im;
+	}
 			\end{lstlisting}
 	\item \textbf{\underline{Abstract Types}} hide their implementation from the user, and are defined by operations.\\
 		We can think of 'float' as abstract, since f, e, and s vary in location by endian-ness.\\
@@ -25,28 +25,28 @@ There are two standard approaches to this:
 		This is equivalent to saying that two types are assumed to be the same unless they behave differently.\\
 		This approach tends to be most applicable to concrete types.
 		\begin{lstlisting} [language=C]
-		typedef int T;
-		typedef int U;
-		T v;
-		U *p = &v;
+	typedef int T;
+	typedef int U;
+	T v;
+	U *p = &v;
 		\end{lstlisting}
 	\item \textbf{\underline{Name Equivalence}}\\
 		$\equiv$ two types are the same if and only if they have the same name.\\
 		This approach tends to be most applicable to abstract types.
 		\begin{lstlisting} [language=C]
-		struct R {double re, im;}
-		struct S {double re, im;}
-		struct R v;
-		struct S *p = &v; // ERROR
+	struct R {double re, im;}
+	struct S {double re, im;}
+	struct R v;
+	struct S *p = &v; // ERROR
 		\end{lstlisting}
 \end{enumerate}
 
-\noindent Suppose we wanted to implement structural equivalence in C.		
+\noindent Suppose we wanted to implement structural equivalence in C.\\
 Then R and S would be equivalent, which leads to complications, for instance we can do:
 \begin{lstlisting} [language=C]
-		struct T {int val; struct U* pair;};
-		struct U {int val; struct T* pair;};
-		// and these would be equivalent as well
+	struct T {int val; struct U* pair;};
+	struct U {int val; struct T* pair;};
+	// and these would be equivalent as well
 \end{lstlisting}
 These complications were avoided for C, which was optimized for efficiency.\\
 \\
@@ -54,10 +54,10 @@ Type equivalence is more complicated when it comes to subtypes.\\
 The behavior we want is: T == U $\iff$ T $\subseteq$ U \&\& U $\subseteq$ T.\\
 Thus consider the following code in PASCAL
 \begin{lstlisting} [language=PASCAL]
-		type alpha = 'a'..'z';
-		var a: char; var b: alpha;
-		a := b; // legal
-		b := a; // trouble -- might be out of range
+	type alpha = 'a'..'z';
+	var a: char; var b: alpha;
+	a := b; (* legal *)
+	b := a; (* trouble -- might be out of range *)
 \end{lstlisting}
 What do we do in this situation?  We have two options:
 \begin{enumerate} [itemsep=0mm]
@@ -65,47 +65,47 @@ What do we do in this situation?  We have two options:
 	\item report a runtime error if the bounds are violated.
 \end{enumerate}
 Pascal chooses the latter, so we say it uses \textit{soft} type checking.\\
-This is called \textbf{\underline{subtype polymorphism}}.
+This is called \textbf{\underline{subtype polymorphism}}.\\
 It appears in object-oriented languages within the idea of a subclass.\\
 A subclass is more restrictive than its parent, which lets it have more operations
 \begin{lstlisting} [language=C++]
-		Class C : public p;
-		P *p = C; // ok
-		C *p = P; // bad
+	Class C : public p;
+	P *p = C; // ok
+	C *p = P; // bad
 \end{lstlisting}
 For an example, consider C's char* and char const*; which is the type and which is the subtype? Consider:
 \begin{lstlisting} [language=C++]
-		char buf [2000];
-		char *p = buf;
-		char const *q = buf; // allowed, we just can't modify buf via q
-		q = 'x'; // BAD
-		// whereas
-		char const str [] = "xyz";
-		char const *q = str; // OK
-		char *p = str; // allowed, but can cause runtime errors
-		*p = 'x'; // allowed, but we may get s SIGSEGV
+	char buf [2000];
+	char *p = buf;
+	char const *q = buf; // allowed, we just can't modify buf via q
+	*q = 'x'; // BAD
+	// whereas
+	char const str [] = "xyz";
+	char const *q = str; // OK
+	char *p = str; // allowed, but can cause runtime errors
+	*p = 'x'; // allowed, but we may get s SIGSEGV
 \end{lstlisting}
 Since char* allows for operations that const char* doesn't, char* is a subclass of char const*\\
 \\
 A harder example: char const* const* vs char **q
 \begin{lstlisting} [language=C++]
-		char **q = char const * const *p; // BAD
-		char const * const *p = char **q; // BAD in C due to special type rules; 
-		// was decided to be a special case in C++
+	char **q = char const * const *p; // BAD
+	char const * const *p = char **q; // BAD in C due to special type rules; 
+	// was decided to be a special case in C++
 \end{lstlisting}
 Since we know const restricts our operations, char** is a subclass of char const * const *.\\
 \\
 \textbf{\underline{Rule Complexoty}} is a double-edge sword, since strong type checking increases complexity.\\
-This introduces the idea of \textbf{\underline{polymorphism}}
-\indent $\equiv$ the property of a symbol operation to accept multiple 'forms'
+This introduces the idea of \textbf{\underline{polymorphism}}\\
+\indent $\equiv$ the property of a symbol operation to accept multiple 'forms'\\
 For example, in C a + b works whether a,b are 'int'/'float'/'long'/'ulong'.\\
-	\indent This is an example of compile-time polymorphism, which is in statically checked languages.\\
+	\indent This is an example of compile-time polymorphism, which is used in statically checked languages.\\
 In Python, this happens at runtime.\\
 How does this happen (in C)?
 \begin{lstlisting} [language=C]
-		double f(double a, double b) {return a + b;}
-		float g(float a, float b) {return a + b;}
-		// these compile to different machine code
+	double f(double a, double b) {return a + b;}
+	float g(float a, float b) {return a + b;}
+	// these compile to different machine code
 \end{lstlisting}
 
 Polymorphism can fall into two major categories:
@@ -122,7 +122,7 @@ Polymorphism can fall into two major categories:
 			\item \textbf{\underline{Overloading}}
 				$\equiv$ the act of identifying operations and functions by types/content of parameters.\\
 				Functions with the same name will have different ABI/API, and the compiler chooses by type.\\
-				The above two functions are an example, which may beg the question,
+				The above two functions are an example, which may beg the question,\\
 					"Wouldn't it be better to just operate on the 64 bit float always?"\\
 				\indent NO 
 					\begin{itemize} [itemsep=0mm]
@@ -137,14 +137,13 @@ Polymorphism can fall into two major categories:
 				$\equiv$ implicit type conversion required for an expression to be valid.\\
 				Consider the '+' operator in C.  It:
 				\begin{itemize} [itemsep=0mm]
-					\item accepts combinations of 
-						{int, uint, long, ulong, long long, ulong long float, double, long double}.
-					\item does not accept {char, uchar, short, ushort}.
+					\item accepts \{int, uint, long, ulong, long long, ulong long float, double, long double\}.
+					\item does not accept \{char, uchar, short, ushort\}.
 				\end{itemize}
 				We would thus expect to have 196 variations of the operator, but with coercion we only need 4.\\
 				This is because coercion follows the following rules:
 				\begin{itemize} [itemsep=0mm]
-					\item if sizeof(t) < sizeof(int), then cast T to int.
+					\item if sizeof(T) < sizeof(int), then cast T to int.
 					\item if sizeof($T_1$) > sizeof($T_2$), cast $T_1$ to type($T_2$).
 					\item else, cast both numbers to unsigned.
 				\end{itemize}
@@ -170,43 +169,44 @@ assert(-2^32 < 0); // EXCEPTION -- 2^32 is converted to unsigned, then negated,
 		\end{enumerate}
 		These two types of ad-hoc polymorphism can interact to cause undefined behavior:
 		\begin{lstlisting} [language=C]
-		inf f(double x, int y);
-		int f(int x, double y);
-		f(3, 5); // which one does it call? 
+inf f(double x, int y);
+int f(int x, double y);
+f(3, 5); // which one does it call? 
 		\end{lstlisting}
 	\item \textbf{\underline{Parametric Polymorphism}}
 		$\equiv$ the ability of a function or operation to take an unlimited number of types.\\
 		Consider Java; prior to 2005, there was no polymorphism, so a class may be of the form:
 		\begin{lstlisting} [language=Java]
-		public interface List {
-		  void add (Object);
-		  Iterator iterator();
-		} // these are required for any object
-		public interface Iterator {
-		  void remove(); // remove the last item accessed
-		  Object next(); // gets the next item in the list
-		  bool hasNext();
-		} 
-		List l;  ... l.add("abc"); ...
-		for (Iterator i = l.iterator(); i.hasNext())
-		  if ((string)(i.next()).length() == 1) i.remove(); // removes all length 1 strings
+public interface List {
+  void add (Object);
+  Iterator iterator();
+} // these are required for any object
+public interface Iterator {
+  void remove(); // remove the last item accessed
+  Object next(); // gets the next item in the list
+  bool hasNext();
+} 
+List l;  ... l.add("abc"); ...
+for (Iterator i = l.iterator(); i.hasNext())
+  if ((string)(i.next()).length() == 1) i.remove(); 
+  // removes all length 1 strings
 		\end{lstlisting}
 		Java users complained about this runtime check and clutter for years, 
 			so Java added \textbf{\underline{generic types}}.
 		\begin{lstlisting} [language=Java]
-		public interface List <E> {
-		  void add (E);
-		  Iterator<E> iterator();
-		} 
-		public interface Iterator <E> {
-		  E next();
-		  bool hasNext();
-		  void remove();
-		}
-		for (Iterator<string> i = l; l.hasNext())
-		  if (l.next().length() == 1) i.remove();
+public interface List <E> {
+  void add (E);
+  Iterator<E> iterator();
+} 
+public interface Iterator <E> {
+  E next();
+  bool hasNext();
+  void remove();
+}
+for (Iterator<E> i = l; l.hasNext())
+  if (l.next().length() == 1) i.remove();
 		\end{lstlisting}
-		We have seen this idea before with C++ \textbf{\underline{templates}}.
+		We have seen this idea before with C++ \textbf{\underline{templates}}.\\
 		These two ideas form the basic techniques of parametric polymorphism:
 		\begin{enumerate} [itemsep=0mm]
 			\item Templates (C++, Ada)\\
@@ -215,10 +215,10 @@ assert(-2^32 < 0); // EXCEPTION -- 2^32 is converted to unsigned, then negated,
 					\item faster and lower level
 					\item full checking and optimization permitted
 				\end{itemize}
-				For instance: List<E> stands for List<int>, List<double>, etc, 
+				For instance: List<E> stands for List<int>, List<double>, etc, \\
 					BUT for each required type, a separate form of the function must be compiled.
 			\item Generics (OCaml, Java, newer languages in general)\\
-				$\equiv$ only the translated machine code for all types used is copied
+				$\equiv$ only the translated machine code for types used is copied
 				\begin{itemize} [itemsep=0mm]
 					\item all checking is done on compilation
 					\item more streamlined, less optimizeable

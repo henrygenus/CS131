@@ -25,7 +25,7 @@ This has an ambiguity, as can be seen by the two parse trees below:
 					}
 					edge from parent node {}
 				}
-				child {node [circle, draw] {}
+				child {node {E}
 					child{node {b}
 						edge from parent node {}
 					}
@@ -151,7 +151,7 @@ Our edits specify two new properties: \begin{enumerate}
 	\item both (*) and (+) are left-associative
 \end{enumerate}
 Let's now look at a subset of C's grammar:\\
-	\indent smt:\\
+	\indent stmt:\\
 		\indent \indent ';'\\
 		\indent \indent 'break' ';'\\
 		\indent \indent 'return' ';'\\
@@ -186,7 +186,7 @@ Consider the following two trees:
 			[if]
 			[(]
 			[E 
-				[c \equal\equal d]
+				[c\equal\equal d]
 			]
 			[)]
 			[E
@@ -196,12 +196,11 @@ Consider the following two trees:
 			]
 		]
 		[E
-			[else
-				[E
-					[return]
-					[d]
-					[;]
-				]
+			[else]
+			[E
+				[return]
+				[d]
+				[;]
 			]
 		]
 	]
@@ -218,7 +217,7 @@ Consider the following two trees:
 			[if]
 			[(]
 			[E 
-				[c \equal\equal d]
+				[c\equal\equal d]
 			]
 			[)]
 			[E
@@ -226,12 +225,11 @@ Consider the following two trees:
 				[a/c]
 				[;]
 			]
-			[else
-				[E
-					[return]
-					[d]
-					[;]
-				]
+			[else]
+			[E
+				[return]
+				[d]
+				[;]
 			]
 		]
 	];
@@ -307,7 +305,7 @@ int g(void) {return (a=1) + (a=2);}
 Compare how C and Java deal with this problem:\\
 	\indent C -- undefined behavior\\
 	\indent Java -- L $\to$ R semantics; this is valid, but prevents compiler optimization.\\
-We can thus see side effects in expressions tend to be bad news, and programs with them are hard to maintain.\\
+Thus side effects in expressions tend to be bad news, and programs with them are hard to maintain.\\
 \textbf{\underline{Undefined Behavior}} is dependent on semantics; it is the problem of competing side effects\\
 \\
 These problems were evident to J. Backus after he made FORTAN ambiguous for performance's sake.\\
@@ -342,18 +340,18 @@ So if functional languages can't modify state, how do they do I/O?\\
 Functional programming has a few very beneficial properties: \begin{lstlisting}[language=ML]
 (* 1. evaluation order is not controlled by sequencing *)
 # h(f(a), g(b))
-	(* the order must be g,f -> h; since g \& f have no order, this is partial order *)
+(* the order must be g,f -> h; since g \& f have no order, this is partial order *)
 (* 2. referential transparency *)
-# 	let x = 1 in
-	let f = fun f -> x + f in 
-	let x = 2 in
-	f 2;;
+# let x = 1 in
+   let f = fun f -> x + f in 
+   let x = 2 in
+   f 2;;
 - : int 3
 (* 	f uses the definition of x within its code block -- this x cannot change value.
 	The variable/function f exist in different namespaces => they are unambiguous.
 	Thus the CPU can cache and optimize even faster.
 	This is so strong that there will be no errors, even on reuse: *)
 # let square square = square * square;;
-(* perfectly valid code -- function square \& variable square are in different namespaces *)
+(* perfectly valid code -- function square & variable square are in different namespaces *)
 \end{lstlisting}
 \end{document}

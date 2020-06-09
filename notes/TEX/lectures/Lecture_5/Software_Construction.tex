@@ -86,7 +86,7 @@ The gjc model is as follows:\\
 	\draw [->] (src.east) -- node [align=center, above] {javac} (cls.west);
 	\draw [->] (cls.east) -- (int.west);
 	\draw [->] (comp.west) -- node [align=center, above] {gcc} (int.east);
-\end{tikzpicture}
+\end{tikzpicture} \medskip
 \noindent The steps \begin{itemize} [itemsep=0mm]
 	\item the interpreter uses bytecode-to-x86.c to \underline{profile} the code\\
 		$\equiv$ the compilation of recorded hotspots to machine code
@@ -99,8 +99,8 @@ This has a few advantages: \begin{itemize} [itemsep=0mm]
 	\item time -- recompilation is not necessary on change of source code
 	\item space -- unused parts of the library are not unnecessarily loaded
 	\end{itemize}
-This is called a \textbf{\underline{just-in-time/hotspot compiler}}\\
-\\
+This is called a \textbf{\underline{just-in-time/hotspot compiler}}.\\
+
 \subsubsection*{Conclusion}
 Real life is unsurprisingly more complicated; this behavior exists on a spectrum: 
 	\begin{itemize} [itemsep=0mm]
@@ -114,19 +114,18 @@ The JVM approach is used for Javascript on browsers, which requires varying code
 	\indent This is no big deal -- we already needed different machine code anyway.\\
 \\
 IDE's and Virtual Machines require one more functionality: \textbf{\underline{Dynamic Linking}}\\
-\indent We take a piece of a program/file and link it into a running program. Examples include:\\
-	\begin{itemize} [itemsep=0mm]
+\indent We take a piece of a program/file and link it into a running program. \\
+Examples include: \begin{itemize} [itemsep=0mm]
 		\item emacs takes shared machine code object files and links it using emacs Lisp
 		\item JVM and Javascript do the same thing with their own native methods
 	\end{itemize}
-In effect, this creates self modifying code, which is an idea fundamental to CS! See: AI, the stack, etc.)\\
+In effect, this creates self modifying code, which is an idea fundamental to CS! (See: AI, the stack, etc.)\\
 There are two ways to dynamically link:
 	\begin{enumerate} [itemsep=0mm]
-		\item complete linkage on load time
+		\item complete linkage on load time\\
 			This is safe, but much slower.
-		\item load functions on usage
-			This can be risky, since
-				\begin{enumerate} [itemsep=0mm]
+		\item load functions on usage\\
+			This can be risky, since \begin{enumerate} [itemsep=0mm]
 					\item functions may change between calls
 					\item malicious or bad code may cause errors
 				\end{enumerate}

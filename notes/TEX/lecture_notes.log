@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  8 JUN 2020 15:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  9 JUN 2020 07:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1054,8 +1054,8 @@ Overfull \hbox (13.10223pt too wide) in paragraph at lines 140--140
  [] 
  []
 
-[4] [5]) [6] [7] (./lectures/Lecture_3/Grammar_Notation.tex [8]
-Overfull \hbox (59.58646pt too wide) in paragraph at lines 88--88
+[4] [5] [6]) [7] (./lectures/Lecture_3/Grammar_Notation.tex [8]
+Overfull \hbox (59.58646pt too wide) in paragraph at lines 87--87
  [] 
  []
 
@@ -1071,7 +1071,7 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2020/03/24 1.8d listings language file
 )) [9]
-(./lectures/Lecture_4/Ambiguity.tex [10]
+[10] (./lectures/Lecture_4/Ambiguity.tex [11]
 Missing character: There is no ; in font nullfont!
 Missing character: There is no [ in font nullfont!
 Missing character: There is no + in font nullfont!
@@ -1089,35 +1089,35 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 )
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2020/03/24 1.8d listings language file
-) [11]
-Overfull \hbox (85.8444pt too wide) in paragraph at lines 345--346
+) [12]
+Overfull \hbox (40.49504pt too wide) in paragraph at lines 343--344
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][] 
+][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (63.16972pt too wide) in paragraph at lines 352--353
+Overfull \hbox (63.16972pt too wide) in paragraph at lines 350--351
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (57.50105pt too wide) in paragraph at lines 353--354
+Overfull \hbox (57.50105pt too wide) in paragraph at lines 351--352
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (91.51308pt too wide) in paragraph at lines 357--358
+Overfull \hbox (85.8444pt too wide) in paragraph at lines 355--356
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][] 
  []
 
-) [12] (./lectures/Lecture_5/Software_Construction.tex [13] [14]) [15]
+) [13] (./lectures/Lecture_5/Software_Construction.tex [14] [15]) [16]
 (./lectures/Lecture_6/Identifiers.tex
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
@@ -1127,223 +1127,120 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 )
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
-) [16]
-[17]) [18] (./lectures/Lecture_7/Polymorphism.tex
+) [17]
+[18]) [19] (./lectures/Lecture_7/Polymorphism.tex
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
-)
-Overfull \hbox (17.82036pt too wide) in paragraph at lines 80--81
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
- 
- []
-
-[19]
-Overfull \hbox (68.8384pt too wide) in paragraph at lines 93--94
+) [20]
+Overfull \hbox (23.48903pt too wide) in paragraph at lines 93--94
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][] 
  []
 
-[20]
-Overfull \hbox (61.29503pt too wide) in paragraph at lines 166--167
+[21]
+Overfull \hbox (61.29503pt too wide) in paragraph at lines 165--166
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (61.29503pt too wide) in paragraph at lines 167--168
+Overfull \hbox (61.29503pt too wide) in paragraph at lines 166--167
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (15.94566pt too wide) in paragraph at lines 168--169
+Overfull \hbox (15.94566pt too wide) in paragraph at lines 167--168
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
-)
-Overfull \hbox (154.31862pt too wide) in paragraph at lines 192--193
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][] 
- []
-
-) [21] (./lectures/Lecture_8/Scope_and_Error_Handling.tex
-Overfull \hbox (18.27052pt too wide) in paragraph at lines 28--29
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
+) [22])
+[23] (./lectures/Lecture_8/Scope_and_Error_Handling.tex
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 )
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2020/03/24 1.8d listings language file
-) [22]
-Overfull \hbox (57.95122pt too wide) in paragraph at lines 114--115
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[23]) [24] (./lectures/Lecture_9/Memory_Management.tex
-<Images/frames.jpeg, id=97, 904.37875pt x 619.31375pt>
+) [24]
+[25]) [26] (./lectures/Lecture_9/Memory_Management.tex
+<Images/frames.jpeg, id=104, 904.37875pt x 619.31375pt>
 File: Images/frames.jpeg Graphic file (type jpg)
 <use Images/frames.jpeg>
 Package pdftex.def Info: Images/frames.jpeg  used on input line 63.
 (pdftex.def)             Requested size: 430.00462pt x 294.46059pt.
- [25]
-<Images/curry_frames.jpeg, id=102, 963.6pt x 536.0025pt>
+ [27]
+<Images/curry_frames.jpeg, id=108, 963.6pt x 536.0025pt>
 File: Images/curry_frames.jpeg Graphic file (type jpg)
 <use Images/curry_frames.jpeg>
 Package pdftex.def Info: Images/curry_frames.jpeg  used on input line 100.
 (pdftex.def)             Requested size: 430.00462pt x 239.18692pt.
- [26 <./Images/frames.jpeg>]
-<Images/heap.jpeg, id=106, 958.58125pt x 495.8525pt>
+ [28 <./Images/frames.jpeg>]
+<Images/heap.jpeg, id=112, 958.58125pt x 495.8525pt>
 File: Images/heap.jpeg Graphic file (type jpg)
 <use Images/heap.jpeg>
 Package pdftex.def Info: Images/heap.jpeg  used on input line 113.
 (pdftex.def)             Requested size: 430.00462pt x 222.43549pt.
- [27 <./Images/curry_frames.jpeg> <./Images/heap.jpeg>]
-<Images/free_list.jpeg, id=110, 958.58125pt x 561.09625pt>
+ [29 <./Images/curry_frames.jpeg> <./Images/heap.jpeg>]
+<Images/free_list.jpeg, id=116, 958.58125pt x 561.09625pt>
 File: Images/free_list.jpeg Graphic file (type jpg)
 <use Images/free_list.jpeg>
-Package pdftex.def Info: Images/free_list.jpeg  used on input line 142.
+Package pdftex.def Info: Images/free_list.jpeg  used on input line 140.
 (pdftex.def)             Requested size: 430.00462pt x 251.70331pt.
- [28 <./Images/free_list.jpeg>]
-Overfull \hbox (6.48302pt too wide) in paragraph at lines 201--202
+ [30 <./Images/free_list.jpeg>]
+Overfull \hbox (6.48302pt too wide) in paragraph at lines 196--197
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][] 
  []
 
-<Images/generational_heap.jpeg, id=114, 915.42pt x 327.2225pt>
+<Images/generational_heap.jpeg, id=120, 915.42pt x 327.2225pt>
 File: Images/generational_heap.jpeg Graphic file (type jpg)
 <use Images/generational_heap.jpeg>
-Package pdftex.def Info: Images/generational_heap.jpeg  used on input line 227.
+Package pdftex.def Info: Images/generational_heap.jpeg  used on input line 222.
 
 (pdftex.def)             Requested size: 430.00462pt x 153.7097pt.
-<Images/nursery_pack.jpeg, id=115, 963.6pt x 246.9225pt>
+<Images/nursery_pack.jpeg, id=121, 963.6pt x 246.9225pt>
 File: Images/nursery_pack.jpeg Graphic file (type jpg)
 <use Images/nursery_pack.jpeg>
-Package pdftex.def Info: Images/nursery_pack.jpeg  used on input line 239.
+Package pdftex.def Info: Images/nursery_pack.jpeg  used on input line 234.
 (pdftex.def)             Requested size: 430.00462pt x 110.18723pt.
-[29 <./Images/generational_heap.jpeg>]
-<Images/Python_heap.jpeg, id=119, 696.6025pt x 414.54875pt>
+[31 <./Images/generational_heap.jpeg>]
+<Images/Python_heap.jpeg, id=126, 696.6025pt x 414.54875pt>
 File: Images/Python_heap.jpeg Graphic file (type jpg)
 <use Images/Python_heap.jpeg>
-Package pdftex.def Info: Images/Python_heap.jpeg  used on input line 284.
+Package pdftex.def Info: Images/Python_heap.jpeg  used on input line 278.
 (pdftex.def)             Requested size: 258.00539pt x 153.53877pt.
- [30 <./Images/nursery_pack.jpeg> <./Images/Python_heap.jpeg>]) [31] (./lecture
-s/Lecture_10/OOP.tex
+ [32 <./Images/nursery_pack.jpeg>])
+[33 <./Images/Python_heap.jpeg>] (./lectures/Lecture_10/OOP.tex
 (/usr/local/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
-) [32]
-[33] [34]
-<Images/attribute_tree.jpeg, id=136, 490.83376pt x 501.875pt>
+) [34]
+[35] [36]
+<Images/attribute_tree.jpeg, id=142, 490.83376pt x 501.875pt>
 File: Images/attribute_tree.jpeg Graphic file (type jpg)
 <use Images/attribute_tree.jpeg>
-Package pdftex.def Info: Images/attribute_tree.jpeg  used on input line 238.
+Package pdftex.def Info: Images/attribute_tree.jpeg  used on input line 237.
 (pdftex.def)             Requested size: 85.9996pt x 87.92899pt.
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 275--276
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
- []
-
-[35 <./Images/attribute_tree.jpeg>]) [36] (./lectures/Languages/OCaml.tex
-[37]
-Overfull \hbox (34.82637pt too wide) in paragraph at lines 101--102
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][] 
- []
-
-
-Overfull \hbox (6.48302pt too wide) in paragraph at lines 119--120
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[38]
-Overfull \hbox (17.82036pt too wide) in paragraph at lines 145--146
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (34.82637pt too wide) in paragraph at lines 150--151
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
- []
-
-
-Overfull \hbox (23.48903pt too wide) in paragraph at lines 173--174
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (63.16972pt too wide) in paragraph at lines 174--175
+ [37 <./Images/attribute_tree.jpeg>]) [38]
+(./lectures/Languages/OCaml.tex [39] [40]
+Overfull \hbox (17.82036pt too wide) in paragraph at lines 173--174
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (46.16371pt too wide) in paragraph at lines 182--183
+Overfull \hbox (0.81435pt too wide) in paragraph at lines 181--182
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][] 
+[][][][][][][][][][][][][] 
  []
 
-
-Overfull \hbox (29.1577pt too wide) in paragraph at lines 185--186
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
- []
-
-
-Overfull \hbox (12.15169pt too wide) in paragraph at lines 201--202
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 205--206
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][] 
- []
-
-[39]
-Overfull \hbox (23.48903pt too wide) in paragraph at lines 233--234
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (40.49504pt too wide) in paragraph at lines 234--235
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][][][][] 
- []
-
-
+[41]
 Overfull \hbox (0.81435pt too wide) in paragraph at lines 239--240
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
- []
-
-
-Overfull \hbox (46.16371pt too wide) in paragraph at lines 240--241
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
@@ -1351,295 +1248,92 @@ Overfull \hbox (46.16371pt too wide) in paragraph at lines 240--241
  []
 
 
-Overfull \hbox (23.48903pt too wide) in paragraph at lines 241--242
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (68.8384pt too wide) in paragraph at lines 255--256
+Overfull \hbox (23.48903pt too wide) in paragraph at lines 254--255
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (57.50105pt too wide) in paragraph at lines 261--262
+Overfull \hbox (12.15169pt too wide) in paragraph at lines 260--261
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][] 
+[][][][][][][][][][][][][][][][] 
  []
 
-) [40] (./lectures/Languages/Java.tex [41]
-Overfull \hbox (23.48903pt too wide) in paragraph at lines 129--130
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[42] [43] [44] [45]
-Overfull \hbox (6.93318pt too wide) in paragraph at lines 400--401
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[46]
-Overfull \hbox (12.60185pt too wide) in paragraph at lines 443--444
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[47]
-Overfull \hbox (1.26451pt too wide) in paragraph at lines 556--557
-[][][][][][][][][][][][][][][][][][][][] 
- []
-
-[48]) [49] (./lectures/Languages/Prolog.tex
-Overfull \hbox (23.48903pt too wide) in paragraph at lines 55--56
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][] 
- []
-
-[50] [51] [52]
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 250--251
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (6.48302pt too wide) in paragraph at lines 251--252
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][] 
- []
-
-[53]
-<Images/debug_model.jpeg, id=198, 824.07875pt x 382.42876pt>
+) [42] (./lectures/Languages/Java.tex [43] [44] [45] [46] [47] [48] [49]
+[50]) [51] (./lectures/Languages/Prolog.tex [52] [53] [54] [55]
+<Images/debug_model.jpeg, id=205, 824.07875pt x 382.42876pt>
 File: Images/debug_model.jpeg Graphic file (type jpg)
 <use Images/debug_model.jpeg>
-Package pdftex.def Info: Images/debug_model.jpeg  used on input line 274.
+Package pdftex.def Info: Images/debug_model.jpeg  used on input line 276.
 (pdftex.def)             Requested size: 430.00462pt x 199.55266pt.
 
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 305--306
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (68.8384pt too wide) in paragraph at lines 306--307
+Overfull \hbox (29.1577pt too wide) in paragraph at lines 308--309
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-[54 <./Images/debug_model.jpeg>]
-Overfull \hbox (23.48903pt too wide) in paragraph at lines 369--370
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+[56 <./Images/debug_model.jpeg>]
+Overfull \hbox (16.11414pt too wide) in paragraph at lines 426--426
+ [] 
  []
 
-
-Overfull \hbox (12.15169pt too wide) in paragraph at lines 370--371
+[57] [58]) [59] (./lectures/Languages/Scheme.tex
+<Images/tail_call.jpeg, id=218, 295.1025pt x 193.72375pt>
+File: Images/tail_call.jpeg Graphic file (type jpg)
+<use Images/tail_call.jpeg>
+Package pdftex.def Info: Images/tail_call.jpeg  used on input line 54.
+(pdftex.def)             Requested size: 129.00269pt x 84.68593pt.
+ [60 <./Images/tail_call.jpeg>]
+Overfull \hbox (68.8384pt too wide) in paragraph at lines 67--68
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][] 
  []
 
 
-Overfull \hbox (34.82637pt too wide) in paragraph at lines 373--374
+Overfull \hbox (6.48302pt too wide) in paragraph at lines 97--98
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (16.11414pt too wide) in paragraph at lines 424--424
- [] 
- []
-
-[55]
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 429--430
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 430--431
+Overfull \hbox (0.81435pt too wide) in paragraph at lines 110--111
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-
-Overfull \hbox (17.82036pt too wide) in paragraph at lines 431--432
+[61]
+Overfull \hbox (17.82036pt too wide) in paragraph at lines 151--152
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][] 
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-
-Overfull \hbox (34.82637pt too wide) in paragraph at lines 439--440
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][] 
- []
-
-[56]) [57] (./lectures/Languages/Scheme.tex
-<Images/tail_call.jpeg, id=212, 295.1025pt x 193.72375pt>
-File: Images/tail_call.jpeg Graphic file (type jpg)
-<use Images/tail_call.jpeg>
-Package pdftex.def Info: Images/tail_call.jpeg  used on input line 54.
-(pdftex.def)             Requested size: 129.00269pt x 84.68593pt.
- [58 <./Images/tail_call.jpeg>]
-Overfull \hbox (114.18776pt too wide) in paragraph at lines 67--68
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 87--89
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 96--97
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (51.83238pt too wide) in paragraph at lines 97--98
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 108--109
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (46.16371pt too wide) in paragraph at lines 110--111
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 111--112
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (29.1577pt too wide) in paragraph at lines 112--113
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (17.82036pt too wide) in paragraph at lines 120--121
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (17.82036pt too wide) in paragraph at lines 122--123
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[59]
-Overfull \hbox (34.82637pt too wide) in paragraph at lines 139--140
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
- []
-
-
-Overfull \hbox (63.16972pt too wide) in paragraph at lines 151--152
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 161--162
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
- []
-
-
-Overfull \hbox (6.48302pt too wide) in paragraph at lines 177--178
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[60] [61]
-Overfull \hbox (51.83238pt too wide) in paragraph at lines 272--273
+[62] [63]
+Overfull \hbox (6.48302pt too wide) in paragraph at lines 272--273
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (34.82637pt too wide) in paragraph at lines 274--275
+Overfull \hbox (12.15169pt too wide) in paragraph at lines 277--278
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][][][][][][][] 
+[] 
  []
 
-
-Overfull \hbox (57.50105pt too wide) in paragraph at lines 277--278
+[64]
+Overfull \hbox (0.81435pt too wide) in paragraph at lines 352--353
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][] 
+[][][][][][][][][][][][][] 
  []
 
-
-Overfull \hbox (40.49504pt too wide) in paragraph at lines 316--317
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][] 
- []
-
-[62]
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 331--332
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][] 
- []
-
-
-Overfull \hbox (6.48302pt too wide) in paragraph at lines 333--334
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][] 
- []
-
-
-Overfull \hbox (0.81435pt too wide) in paragraph at lines 334--335
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (46.16371pt too wide) in paragraph at lines 352--353
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (34.82637pt too wide) in paragraph at lines 353--354
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-[][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-) [63]
+) [65]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 109.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 109.
  (./lecture_notes.aux)
@@ -1651,13 +1345,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 35172 strings out of 480608
- 768268 string characters out of 5903631
- 1202625 words of memory out of 5000000
- 50491 multiletter control sequences out of 15000+600000
+ 34961 strings out of 480608
+ 765136 string characters out of 5903631
+ 1201665 words of memory out of 5000000
+ 50280 multiletter control sequences out of 15000+600000
  545403 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 168i,22n,207p,1612b,2543s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 158i,22n,200p,1612b,2494s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<
 /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pf
@@ -1675,10 +1369,10 @@ e/2020/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/
 20/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2020
 /texmf-dist/fonts/type1/public/cm-super/sfti0900.pfb></usr/local/texlive/2020/t
 exmf-dist/fonts/type1/public/cm-super/sftt0900.pfb>
-Output written on lecture_notes.pdf (63 pages, 650033 bytes).
+Output written on lecture_notes.pdf (65 pages, 648777 bytes).
 PDF statistics:
- 285 PDF objects out of 1000 (max. 8388607)
- 193 compressed objects within 2 object streams
+ 291 PDF objects out of 1000 (max. 8388607)
+ 197 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  63 words of extra memory for PDF output out of 10000 (max. 10000000)
 
