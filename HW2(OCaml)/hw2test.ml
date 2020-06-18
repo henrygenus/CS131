@@ -154,7 +154,22 @@ let ptest3 =
                                                    [Leaf "1"])])])])])])))
 
 let ptest4 =
-  ((make_parser awkish_grammar ["++"; "$"; "1"]))
+  ((make_parser awkish_grammar ["++"; "$"; "1"])
+   = Some
+       (Node (Expr,
+              [Node (Term,
+                     [Node (Incrop, [Leaf "++"]);
+                      Node (Lvalue,
+                            [Leaf "$"; Node (Expr, [Node (Term, [Node (Num, [Leaf "1"])])])])])])))
 
 let ptest5 =
-  ((make_parser awkish_grammar ["9"; "+"; "$"; "1"; "++"]))
+  ((make_parser awkish_grammar ["9"; "+"; "$"; "1"; "++"])
+   = Some
+       (Node (Expr,
+              [Node (Term, [Node (Num, [Leaf "9"])]); Node (Binop, [Leaf "+"]);
+               Node (Expr,
+                     [Node (Term,
+                            [Node (Lvalue,
+                                   [Leaf "$"; Node (Expr, [Node (Term, [Node (Num, [Leaf "1"])])])]);
+                             Node (Incrop, [Leaf "++"])])])]))
+)

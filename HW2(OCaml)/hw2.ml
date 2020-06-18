@@ -89,26 +89,27 @@ let rec butlast frag index =
   in loop (List.rev frag) index
 
 (* build a tree for a given node *)
-let rec build_tree make_a_tree make_rest_trees nodes = fun suf ->
-  match suf, nodes with
+let rec build_tree make_a_tree make_rest_trees nodes suf =
+  match nodes, suf with
   | [], [] -> Some []
   | [], _  -> None
   |  _, [] -> None
-  | _, h::t ->
+  | h::t, _ ->
      match make_rest_trees suf t h with
      | None -> None
      | Some trees ->
-        match make_a_tree h (butlast suf (List.length trees)) with
+        let trees_terminals = (List.fold_left List.append [] (List.map parse_tree_leaves trees)) in
+        match make_a_tree h (butlast suf (List.length trees_terminals)) with
         | None -> None
         | Some tree -> Some (tree::trees)
-
+                     
 (* returns a parser which builds parse trees for acceptable sentences *)
 let rec make_parser (node, prod_fun) = fun frag ->
   let mat = function
-    | T n -> make_terminal_matcher n (function _ -> Some(Leaf n))
+    | T (n:string) -> make_terminal_matcher n (function _ -> Some(Leaf n))
     | N n -> make_parser (n, prod_fun)
   in let rec mrt suf rest = function
-       | T n -> build_tree mat mrt rest (List.tl suf)
+       | T (n:string) -> build_tree mat mrt rest (List.tl suf)
        | N n -> make_matcher (n, prod_fun) (build_tree mat mrt rest) suf
      in let tree_builder = fun rhs -> build_tree mat mrt rhs frag
         in match List.find_map tree_builder (prod_fun node) with
