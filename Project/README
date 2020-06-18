@@ -21,3 +21,34 @@ STRUCTURE:
 WHATSAT -- Google Nearby Search
         Format: https://maps.googleapis.com/maps/api/place/nearbysearch/json?parameters
                 where parameters = {key, location, radius}
+
+This project utilizes an additional file called "constants.py".  It contains a private API key and is thus left out of the repository.  The other constants defined are:
+
+URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+MAX_LEN = int(1e5)
+connections = {
+	<SERVERNAME>:[CONNECTED SERVER NAMES LIST],
+	<SERVERNAME>:[CONNECTED SERVER NAMES LIST],
+	...
+}
+
+DEBUG = False # true if messages passed are to be sent to stdio as well.
+
+SCOPE = "LOCAL" #"LOCAL" uses the below local port map, "REMOTE" uses the remote.
+
+# these ports work on my machine and the SEASNET servers, respectively.
+# names are arbitrary and must only match the above connections.
+local_server_port_number = {
+    'Hill': 8000,
+    'Jaquez': 8001,
+    'Smith': 8002,
+    'Campbell': 8003,
+    'Singleton': 8004
+}
+remote_server_port_number = {
+    "Hill": 12000,
+    "Jaquez": 12001,
+    "Smith": 12002,
+    "Campbell": 12003,
+    "Singleton": 12004
+}
