@@ -163,7 +163,7 @@ Our first two assignments focus on the token $\to$ tree step. \\
 This is where we consider \textbf{\underline{syntax}}
 
 \subsection*{Syntax}
-$\equiv$ the form of a language independent of meaning/\textbf{\underline{semantics}}
+$\coloneqq$ the form of a language independent of meaning/\textbf{\underline{semantics}}
 \begin{itemize}[itemsep=0mm]
 	\item a sentence can have good syntax and bad semantics\\
 		"Colorless green ideas sleep furiously." -- Noam Chomsky
@@ -180,15 +180,15 @@ Consider the example of 3+4*5 (C) vs 345*+ (Forth) vs (+3(* 4 5)) (LISP)
 		C > Forth $\approx$ Lisp, since C is familiar to standard form
 	\item \underline{simplicity/regularity} -- few, regularly applied rules\\
 		Forth (never parentheses) > LISP (always parentheses) > C (some parentheses)
-	\item \underline{human readability} -- code shows algorithm/operations
-		C $\equiv$ LISP $\equiv$ Forth due to \underline{Leibniz's Criteria} \\
-		$\equiv$ a proposition's form should reflect reality\\
+	\item \underline{human readability} -- code shows algorithm/operations\\
+		C > LISP $\approx$ Forth due to \underline{Leibniz's Criteria} \\
+		$\coloneqq$ a proposition's form should reflect reality\\
 				ex. "if (0 < x \&\& x < n)" > "if (x > 0 \&\& x < n)" since 0 < x < n is natural
 	\item \underline{human writability}\\
 		C  > LISP $\approx$ Forth due to comfortability with standard form
 	\item \underline{redundancy} -- repetition helps catch errors (inapplicable in this example)
 	\item \underline{unambiguity} -- code has only one interpretation\\
-		Forth $\equiv$ LISP > C, since C relies on an implicit order of operations
+		Forth $\approx$ LISP > C, since C relies on an implicit order of operations
 \end{itemize}
 Syntax is build upon \textbf{\underline{tokens}}
 \subsection*{Tokens}
@@ -197,9 +197,9 @@ Tokens can be broken up into three categories \begin{itemize}[itemsep=0mm]
 	\item \underline{identifiers} 
 	\item \underline{operators} \\
 		Operators are often user-defined, but some are \textbf{\underline{keywords}}\\
-		\indent keyword $\equiv$ a word with a special meaning in a language\\
+		\indent keyword $\coloneqq$ a word with a special meaning in a language\\
 		Some operators can also be categorized as \textbf{\underline{reserved words}}\\
-		\indent reserved word $\equiv$ words which are not allowed to be used as a name\\
+		\indent reserved word $\coloneqq$ words which are not allowed to be used as a name\\
 		C, for example, has reserved all words of the form $\_[[:\mbox{capital}:]].*$.\\
 		This is annoying, since it makes us use \_Noreturn instead of noreturn.\\
 		Consider the example 'if':\\
@@ -223,10 +223,10 @@ This would give us the language {"", "b", "ab", "abb", ...}\\
 This doesn't scale well to programming languages.  Instead we abstract to \textbf{\underline{grammars}}\\
 \\
 A few definitions are necessary to begin this discussion:\\
-\indent \textbf{\underline{grammar}} $\equiv$ a description of a language's syntax\\
-\indent \indent  \textbf{\underline{language}} $\equiv$ a set of sentences\\
-\indent \indent  \textbf{\underline{sentence}} $\equiv$ a string within a language\\
-\indent \indent  \textbf{\underline{string}} $\equiv$ a finite sequence of tokens\\
+\indent \textbf{\underline{grammar}} $\coloneqq$ a description of a language's syntax\\
+\indent \indent  \textbf{\underline{language}} $\coloneqq$ a set of sentences\\
+\indent \indent  \textbf{\underline{sentence}} $\coloneqq$ a string within a language\\
+\indent \indent  \textbf{\underline{string}} $\coloneqq$ a finite sequence of tokens\\
 The specific grammars in this course are called \textbf{\underline{Context-Free Grammars}}\\
 A CFG is a set containing \begin{itemize} [itemsep=0mm]
 	\item a finite set of tokens/terminal symbols (leaves)

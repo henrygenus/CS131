@@ -98,7 +98,6 @@ f();
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth]{curry_frames}
-		\caption{A currying frame}
 		\label{fig:test}
 	\end{figure}
 
@@ -124,7 +123,7 @@ The simplest approach: \textbf{\underline{explicit free operation}}\\
 	\end{itemize}
 
 \noindent We can prevent this with \textbf{{garbage collection}}\\
-	\indent $\equiv$ there is no ‘free’ — the underlying memory management system handles it.\\
+	\indent $\coloneqq$ there is no ‘free’ — the underlying memory management system handles it.\\
 	\indent Problems: \begin{itemize} [itemsep=0mm]
 			\item How do we kept track of pointers into the heap (roots)?\\
 				A static table is kept with a frame template and indirect pointers to the heap.
@@ -147,7 +146,7 @@ This can lead to delays, as memory allocation can take up to linear time.\\
 Additionally, blocks near the beginning of the heap will tend to be more fragmented.\\
 \indent If they fragment too much, they chew up CPU time as runts.\\
 Thus we use a \textbf{\underline{roving pointer/next-fit list}}\\
-	\indent $\equiv$ leave the free pointer at the location of the last successful allocation\\
+	\indent $\coloneqq$ leave the free pointer at the location of the last successful allocation\\
 \\
 We must be sure to make a distinction between using a free/del operator \& a garbage collector.\\
 If we are using free/del, keeping track of roots is delegated to the program.\\

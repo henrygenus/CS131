@@ -72,9 +72,9 @@ Another area with multiple approaches is the method of parameter passing a langu
 This, as well as syntax comes down to the issue of correspondence;\\
  How do we match the caller’s arguments with the callee’s parameters?
 \begin{enumerate} [itemsep=0mm]
-	\item Positional Correspondence $\equiv$ match based on position in the parameter list.\\
+	\item Positional Correspondence $\coloneqq$ match based on position in the parameter list.\\
  		This is an approach taken by C, LISP, and most languages since FORTRAN
-	\item Varargs Correspondence $\equiv$ match a fix number of parameters, then pool the rest.\\
+	\item Varargs Correspondence $\coloneqq$ match a fix number of parameters, then pool the rest.\\
 		This can be seen in Scheme:
 		\begin{lstlisting} [language=Lisp]
 (define foo (lambda (x . rest) ...))
@@ -86,7 +86,7 @@ def foo(x, *rest):
   ...
 foo(1, 2, 3, 4) # -> {x/1, rest/[2, 3, 4]}
 		\end{lstlisting}
- 	\item Keyword/Key Correspondence $\equiv$ the caller specifies the argument/parameter binding.\\
+ 	\item Keyword/Key Correspondence $\coloneqq$ the caller specifies the argument/parameter binding.\\
 		Python allows this:
 		\begin{lstlisting} [language=Python]
 def arctan(y, x):
@@ -106,7 +106,7 @@ These are more important to programmers since they affect correctness.\\
 There are many methods of calling functions:
 \begin{enumerate} [itemsep=0mm]
 	\item \textbf{\underline{call by value}}\\
-		$\equiv$ caller evaluates arguments, gets values, and passes to callee;\\
+		$\coloneqq$ caller evaluates arguments, gets values, and passes to callee;\\
 				callee then has a copy and can do whatever it wants with it
 		\begin{lstlisting} [language=C]
 // caller:
@@ -123,7 +123,7 @@ return x;
 			\item Suppose an unused result or error — extra computation!
 		\end{enumerate}
 	\item \textbf{\underline{call by reference}}\\
-		$\equiv$ caller passes a copy of a pointer that the callee can inspect/verify\\
+		$\coloneqq$ caller passes a copy of a pointer that the callee can inspect/verify\\
 		This is commonly used in C:
 		\begin{lstlisting} [language=C]
 int f(int &x) {return x++;}
@@ -164,7 +164,7 @@ trouble (n, n);
 	strcpy(x, x); // GCC compiler warning -- no aliasing
 		\end{lstlisting}
 	\item \textbf{\underline{call by result}}\\
-		$\equiv$ caller tells callee where the result should go, and the result is copied there\\
+		$\coloneqq$ caller tells callee where the result should go, and the result is copied there\\
 		This lets a function return a varying result.\\
 		This lets functions communicate in the opposite direction as call by value.\\
 		The variable is instantiated on call and initialized on return.\\
@@ -175,10 +175,10 @@ trouble (n, n);
   // buf is really a call by result!
 		\end{lstlisting}
 	\item \textbf{\underline{call by unification}}\\
-		$\equiv$ parameters are unified by compiler.\\
+		$\coloneqq$ parameters are unified by compiler.\\
 		This is the approach of Prolog.
 	\item \textbf{\underline{call by value-result}}\\
-		$\equiv$ parameter is passed by value and returned by result.\\
+		$\coloneqq$ parameter is passed by value and returned by result.\\
 		The callee thus has a copy it can modify which isn’t changed until return.
 		\begin{lstlisting} [language=C]
 		int x = 5;
@@ -186,10 +186,10 @@ trouble (n, n);
 		f(x); // copy n in and copy result to n
 		\end{lstlisting}
 	\item \textbf{\underline{call by macro expansion}}\\
-		$\equiv$ arguments are a built in piece of the program, and so is the result.\\
+		$\coloneqq$ arguments are a built in piece of the program, and so is the result.\\
 		Utilized by Scheme, C/C++, etc
 	\item \textbf{\underline{call by name}}\\
-		$\equiv$ caller does not evaluate arguments, but instead tells the callee how to evaluate.\\
+		$\coloneqq$ caller does not evaluate arguments, but instead tells the callee how to evaluate.\\
 		The callee can then choose to utilize the description whenever it likes.\\
 		This treats each parameter like an anonymous function.\\
 		Call by name is to atoms as call by referral is to pointers.\\
@@ -212,7 +212,7 @@ print_avg(100/0, 0);
 		Our programs thus just set up a computation to be done later (often via thunks).\\
 		Nothing happens until output is needed.\\
 		This can be extended to \textbf{\underline{call by need }}.\\
-		$\equiv$ call by name + cache results of thunks (Haskell, etc.).\\
+		$\coloneqq$ call by name + cache results of thunks (Haskell, etc.).\\
 		The ‘anonymous functions’ returned for parameters need only be run once.\\
 		It’s easy to say let x = (list of all prime numbers).\\
 		It’s easy to compute with infinite objects.\\
@@ -220,8 +220,8 @@ print_avg(100/0, 0);
 
 The syntax we have been focusing on all quarter tends to be the easier part of language.\\
 Semantics tend to be much harder, and is broken into two categories: \begin{enumerate} [itemsep=0mm]
-	\item \textbf{\underline{static semantics}} $\equiv$ meaning you can tease out before the program runs
-	\item \textbf{\underline{dynamic semantics}} $\equiv$ meaning that won’t be known until the program is run
+	\item \textbf{\underline{static semantics}} $\coloneqq$ meaning you can tease out before the program runs
+	\item \textbf{\underline{dynamic semantics}} $\coloneqq$ meaning that won’t be known until the program is run
 \end{enumerate}
 \noindent Among semantics, static is considered easy, and dynamic hard
 \\
@@ -254,14 +254,14 @@ These let us derive information from grammar rules\\
  Dynamic semantics must further be broken into three broad categories:
  \begin{enumerate} [itemsep=0mm]
 	\item \textbf{\underline{operational}}\\
-		$\equiv$ describe writing an interpreter — derived from imperative languages.\\
+		$\coloneqq$ describe writing an interpreter — derived from imperative languages.\\
 		For example, Python is defined by an interpreter, C-Python, written in C.
 	\item \textbf{\underline{axiomatic}}\\
-		$\equiv$ logic you can use to reason the program — derived from logic languages.\\
+		$\coloneqq$ logic you can use to reason the program — derived from logic languages.\\
 		For example, the first semantics for lisp were defined in Lisp.\\
 		This is philosophically “bad” but interesting in practice, like an English dictionary
 	\item \textbf{\underline{denotational}}\\
-		$\equiv$ function: program → meaning — derived from functional languagea.
+		$\coloneqq$ function: program → meaning — derived from functional languagea.
 \end{enumerate}
 \noindent This is simplified of course.
 \\

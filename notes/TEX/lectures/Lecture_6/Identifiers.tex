@@ -87,7 +87,7 @@ if (class < 12) return; // legal in C, not in C++
 		\end{enumerate}
 
 \subsubsection*{Binding}
-$\equiv$ an association between a name and a value.\\
+$\coloneqq$ an association between a name and a value.\\
 We often access bound data via its mapping in the symbol table.  These bindings can be deceptively simple:
 \begin{lstlisting} [language=C++]
 short a = 10; // a is bound to 10
@@ -97,8 +97,8 @@ assert(sizeof(10) == sizeof(a)); // NO -- 10 is 4 bytes but a is only one
 \end{lstlisting}
 Binding is done in one of two ways:
 \begin{enumerate} [itemsep=0mm]
-	\item \textbf{\underline{Explicit Binding}} $\equiv$ binding written directly into a program
-	\item \textbf{\underline{Implicit Binding}} $\equiv$ binding done as a consequence of a program
+	\item \textbf{\underline{Explicit Binding}} $\coloneqq$ binding written directly into a program
+	\item \textbf{\underline{Implicit Binding}} $\coloneqq$ binding done as a consequence of a program
 \end{enumerate}
 Implicit binding is often considered bad practice, so explicit binding is encouraged.\\
 In many languages, types must be declared explicitly so as to avoid errors.\\
@@ -135,14 +135,14 @@ We can do this in gcc with an option which bans implicit binding \\
 
 \subsubsection*{Types}
 Finding an exact definition of types is difficult, so we will use a few.  This is the simplest:\\
-\indent $\equiv$ a set of values/objects\\
+\indent $\coloneqq$ a set of values/objects\\
 Defining a type explicitly via listing is called \textbf{\underline{enumeration}},
 	and is used in functional languages like Lisp.
 In computer languages, these enumerations are often defined in terms of \textbf{\underline{native types}}.\\
 Any type that can be constructed of native types is called a \textbf{\underline{constructed type}}.
 \\
 Object-Oriented languages often use another definition:\\
-\indent $\equiv$ a set of values and a set of operations on those values\\
+\indent $\coloneqq$ a set of values and a set of operations on those values\\
 Adding the idea of operations allows for observation of values and performance of actions; consider:
 \begin{lstlisting} [language=C++]
 class complex 

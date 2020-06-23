@@ -21,7 +21,7 @@ Given that we can define multiple types, there must be a well defined definition
 There are two standard approaches to this:
 \begin{enumerate} [itemsep=0mm]
 	\item \textbf{\underline{Structural Equivalence}}\\
-		$\equiv$ two types are the same if and only if their structure is the same.\\
+		$\coloneqq$ two types are the same if and only if their structure is the same.\\
 		This is equivalent to saying that two types are assumed to be the same unless they behave differently.\\
 		This approach tends to be most applicable to concrete types.
 		\begin{lstlisting} [language=C]
@@ -31,7 +31,7 @@ There are two standard approaches to this:
 	U *p = &v;
 		\end{lstlisting}
 	\item \textbf{\underline{Name Equivalence}}\\
-		$\equiv$ two types are the same if and only if they have the same name.\\
+		$\coloneqq$ two types are the same if and only if they have the same name.\\
 		This approach tends to be most applicable to abstract types.
 		\begin{lstlisting} [language=C]
 	struct R {double re, im;}
@@ -97,7 +97,7 @@ Since we know const restricts our operations, char** is a subclass of char const
 \\
 \textbf{\underline{Rule Complexoty}} is a double-edge sword, since strong type checking increases complexity.\\
 This introduces the idea of \textbf{\underline{polymorphism}}\\
-\indent $\equiv$ the property of a symbol operation to accept multiple 'forms'\\
+\indent $\coloneqq$ the property of a symbol operation to accept multiple 'forms'\\
 For example, in C a + b works whether a,b are 'int'/'float'/'long'/'ulong'.\\
 	\indent This is an example of compile-time polymorphism, which is used in statically checked languages.\\
 In Python, this happens at runtime.\\
@@ -120,7 +120,7 @@ Polymorphism can fall into two major categories:
 		This can be broken down into two subcategories:
 		\begin{enumerate} [itemsep=0mm]
 			\item \textbf{\underline{Overloading}}
-				$\equiv$ the act of identifying operations and functions by types/content of parameters.\\
+				$\coloneqq$ the act of identifying operations and functions by types/content of parameters.\\
 				Functions with the same name will have different ABI/API, and the compiler chooses by type.\\
 				The above two functions are an example, which may beg the question,\\
 					"Wouldn't it be better to just operate on the 64 bit float always?"\\
@@ -131,10 +131,10 @@ Polymorphism can fall into two major categories:
 					\end{itemize}
 				Thus we choose to implement two functions of the same name.\\
 				During assembly, the compiler does \textbf{\underline{name mangling}} for identification\\
-					\indent $\equiv$ adding illegal characters into names specified by the user.\\
+					\indent $\coloneqq$ adding illegal characters into names specified by the user.\\
 					\indent This makes compiling C with other languages tough, since names won't match.
 			\item \textbf{\underline{Coercion}}\\
-				$\equiv$ implicit type conversion required for an expression to be valid.\\
+				$\coloneqq$ implicit type conversion required for an expression to be valid.\\
 				Consider the '+' operator in C.  It:
 				\begin{itemize} [itemsep=0mm]
 					\item accepts \{int, uint, long, ulong, long long, ulong long float, double, long double\}.
@@ -174,7 +174,7 @@ int f(int x, double y);
 f(3, 5); // which one does it call? 
 		\end{lstlisting}
 	\item \textbf{\underline{Parametric Polymorphism}}
-		$\equiv$ the ability of a function or operation to take an unlimited number of types.\\
+		$\coloneqq$ the ability of a function or operation to take an unlimited number of types.\\
 		Consider Java; prior to 2005, there was no polymorphism, so a class may be of the form:
 		\begin{lstlisting} [language=Java]
 public interface List {
@@ -210,7 +210,7 @@ for (Iterator<E> i = l; l.hasNext())
 		These two ideas form the basic techniques of parametric polymorphism:
 		\begin{enumerate} [itemsep=0mm]
 			\item Templates (C++, Ada)\\
-				$\equiv$ a stand in for not yet compiled code
+				$\coloneqq$ a stand in for not yet compiled code
 				\begin{itemize} [itemsep=0mm]
 					\item faster and lower level
 					\item full checking and optimization permitted
@@ -218,7 +218,7 @@ for (Iterator<E> i = l; l.hasNext())
 				For instance: List<E> stands for List<int>, List<double>, etc, \\
 					BUT for each required type, a separate form of the function must be compiled.
 			\item Generics (OCaml, Java, newer languages in general)\\
-				$\equiv$ only the translated machine code for types used is copied
+				$\coloneqq$ only the translated machine code for types used is copied
 				\begin{itemize} [itemsep=0mm]
 					\item all checking is done on compilation
 					\item more streamlined, less optimizeable
