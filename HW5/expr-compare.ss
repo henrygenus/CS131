@@ -152,4 +152,3 @@
         (if found
             (key-remove (remv found pairs) (cdr keys))
             (key-remove pairs (cdr keys))))))
-            
