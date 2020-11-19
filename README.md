@@ -20,9 +20,15 @@ https://www.registrar.ucla.edu/Academics/Course-Descriptions/Course-Details?SA=C
 
 ## Description of contents:
 /Notes/        pdf and TeX version of notes taken from lectures
+
 /HW1/          OCaml introductory project
+
 /HW2/          OCaml parser/currying project
+
 /HW3/          Java concurrency/intefaces project
+
 /HW4/          Prolog puzzle game project
+
 /Project/      Python asyncio/aiohttp/Google Places project
+
 /HW6/          Dart report on Tensorflow/Flutter
